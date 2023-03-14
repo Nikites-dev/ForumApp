@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forum_app/regPage.dart';
+import 'package:forum_app/pages/regPage.dart';
 
 void main() {
   runApp(const AppThemeMaterial());
