@@ -41,7 +41,7 @@ class RegPage extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.06,
               child: const Input(
                 color: Colors.cyan,
-                icon: Icon(Icons.account_circle, color: Colors.black),
+                icon: Icon(Icons.account_circle, color: Colors.cyan),
                 labelText: 'Username',
               ),
             ),
@@ -53,7 +53,7 @@ class RegPage extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.06,
               child: const Input(
                 color: Colors.cyan,
-                icon: Icon(Icons.email, color: Colors.black),
+                icon: Icon(Icons.email, color: Colors.cyan),
                 labelText: 'Email',
               ),
             ),
@@ -65,8 +65,20 @@ class RegPage extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.06,
               child: const Input(
                 color: Colors.cyan,
-                icon: Icon(Icons.lock, color: Colors.black),
+                icon: Icon(Icons.lock, color: Colors.cyan),
                 labelText: 'Password',
+              ),
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height * 0.06,
+              child: const Input(
+                color: Colors.cyan,
+                icon: Icon(Icons.lock, color: Colors.cyan),
+                labelText: 'Confirm Password',
               ),
             ),
             const SizedBox(
@@ -90,16 +102,16 @@ class RegPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 1,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Already have an account?'),
+                const Text('Already have an account?'),
                 TextButton(
-                  onPressed: () {},
-                  child: Text(
+                  onPressed: () => Navigator.popAndPushNamed(context, "/auth"),
+                  child: const Text(
                     'Sign in',
                     style: TextStyle(
                       color: Colors.cyan,
