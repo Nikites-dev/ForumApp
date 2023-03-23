@@ -1,7 +1,7 @@
 import 'package:forum_app/models/comment.dart';
 
 class Post {
-  int? UserId;
+  String? Username;
   int? InterestsId;
   String? Text;
   DateTime? CreatePost;

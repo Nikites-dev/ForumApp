@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/components/input.dart';
+import 'package:forum_app/pages/home_page.dart';
 
 class RegPage extends StatelessWidget {
   const RegPage({super.key});
@@ -19,21 +21,21 @@ class RegPage extends StatelessWidget {
                 ClipOval(
                   child: Image.asset(
                     'assets/images/logo.png',
-                      width: 130,
-                      height: 130,
+                    width: 130,
+                    height: 130,
                     fit: BoxFit.cover,
                   ),
                 ),
                 SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
-            ),
+                  height: MediaQuery.of(context).size.height * 0.05,
+                ),
                 const Text(
                   'Регистрация',
                   style: TextStyle(fontSize: 30, color: Colors.cyan),
                 ),
               ],
             ),
-             SizedBox(
+            SizedBox(
               height: MediaQuery.of(context).size.height * 0.01,
             ),
             SizedBox(
@@ -88,7 +90,10 @@ class RegPage extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.05,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => HomePage()));
+                },
                 style: ButtonStyle(
                   shape: MaterialStatePropertyAll(
                     RoundedRectangleBorder(
