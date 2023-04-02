@@ -7,6 +7,8 @@ class CreateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder(child: Text('CreateView'),);
+    return const Center(
+      child: Text('CreateView'),
+    );
   }
 }

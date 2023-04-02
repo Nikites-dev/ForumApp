@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:forum_app/pages/regPage.dart';
-import 'package:forum_app/pages/home_page.dart';
+import 'package:forum_app/pages/mainViewPager.dart';
 import 'model.dart';
 
 class LandingPage extends StatelessWidget {

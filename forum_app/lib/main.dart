@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:forum_app/pages/auth_page.dart';
-import 'package:forum_app/pages/home_page.dart';
+import 'package:forum_app/pages/authPage.dart';
+import 'package:forum_app/pages/mainViewPager.dart';
 import 'package:forum_app/pages/regPage.dart';
 import 'package:forum_app/services/auth/landing.dart';
 import 'package:forum_app/services/auth/service.dart';

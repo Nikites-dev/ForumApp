@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:forum_app/pages/main_view.dart';
-import 'package:forum_app/pages/create_view.dart';
+import 'package:forum_app/pages/homeView.dart';
+import 'package:forum_app/pages/createView.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
           Icons.add,
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, 
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
         backgroundColor: Color.fromARGB(255, 224, 215, 215),
