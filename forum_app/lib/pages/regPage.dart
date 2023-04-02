@@ -18,11 +18,6 @@ class _RegPageState extends State<RegPage> {
   final TextEditingController _passwordConfirmController =
       TextEditingController();
 
-  Future signIn() async {
-    var user =
-        await _service.signIn(_emailController.text, _passwordController.text);
-  }
-
   Future signUp() async {
     var user = await _service.register(
         _emailController.text, _passwordController.text);
@@ -68,7 +63,7 @@ class _RegPageState extends State<RegPage> {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.06,
-              child: Input(
+              child: InputWidget(
                 _usernameController,
                 color: Colors.cyan,
                 icon: Icon(Icons.account_circle, color: Colors.cyan),

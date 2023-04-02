@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forum_app/pages/homeView.dart';
 import 'package:forum_app/pages/createView.dart';
+import 'package:forum_app/services/auth/service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -27,7 +28,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color.fromARGB(255, 224, 215, 215),
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
+              await AuthServices().logOut();
               Navigator.popAndPushNamed(context, '/');
               // Navigator.pop(context);
             },
