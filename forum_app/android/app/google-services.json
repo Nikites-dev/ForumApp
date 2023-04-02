@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "251966206123",
+    "firebase_url": "https://forumapp-c42a5-default-rtdb.firebaseio.com",
+    "project_id": "forumapp-c42a5",
+    "storage_bucket": "forumapp-c42a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251966206123:android:6af17402219923347507ee",
+        "android_client_info": {
+          "package_name": "com.example.forum_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251966206123-3ssteihgta8fq4l0uipqo8h8dnisd29t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmeBRCtJJuXkSVGQBF0KjcqGWRAz9NfyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251966206123-3ssteihgta8fq4l0uipqo8h8dnisd29t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

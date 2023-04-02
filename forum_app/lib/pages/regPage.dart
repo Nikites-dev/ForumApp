@@ -1,12 +1,39 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/components/input.dart';
-import 'package:forum_app/pages/home_page.dart';
+import 'package:forum_app/services/auth/service.dart';
+import 'package:forum_app/widgets/inputWidget.dart';
 
-class RegPage extends StatelessWidget {
-  const RegPage({super.key});
+class RegPage extends StatefulWidget {
+  RegPage({super.key});
+
+  @override
+  State<RegPage> createState() => _RegPageState();
+}
+
+class _RegPageState extends State<RegPage> {
+  final AuthServices _service = AuthServices();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmController =
+      TextEditingController();
+
+  Future signIn() async {
+    var user =
+        await _service.signIn(_emailController.text, _passwordController.text);
+  }
+
+  Future signUp() async {
+    var user = await _service.register(
+        _emailController.text, _passwordController.text);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +68,8 @@ class RegPage extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.06,
-              child: const Input(
+              child: Input(
+                _usernameController,
                 color: Colors.cyan,
                 icon: Icon(Icons.account_circle, color: Colors.cyan),
                 labelText: 'Username',
@@ -53,7 +81,8 @@ class RegPage extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.06,
-              child: const Input(
+              child: InputWidget(
+                _emailController,
                 color: Colors.cyan,
                 icon: Icon(Icons.email, color: Colors.cyan),
                 labelText: 'Email',
@@ -65,7 +94,8 @@ class RegPage extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.06,
-              child: const Input(
+              child: InputWidget(
+                _passwordController,
                 color: Colors.cyan,
                 icon: Icon(Icons.lock, color: Colors.cyan),
                 labelText: 'Password',
@@ -77,7 +107,8 @@ class RegPage extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.06,
-              child: const Input(
+              child: InputWidget(
+                _passwordConfirmController,
                 color: Colors.cyan,
                 icon: Icon(Icons.lock, color: Colors.cyan),
                 labelText: 'Confirm Password',
@@ -91,8 +122,9 @@ class RegPage extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.05,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) => HomePage()));
+                  signUp();
+                  Navigator.pushNamed(context, '/home');
+                  print('true');
                 },
                 style: ButtonStyle(
                   shape: MaterialStatePropertyAll(

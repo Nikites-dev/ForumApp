@@ -37,52 +37,52 @@ class AuthPage extends StatelessWidget {
               const SizedBox(
                 height: 12,
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.06,
-                child: const Input(
-                  color: Colors.cyan,
-                  icon: Icon(Icons.email, color: Colors.cyan),
-                  labelText: 'Email',
-                ),
-              ),
+              // SizedBox(
+              //   width: MediaQuery.of(context).size.width * 0.8,
+              //   height: MediaQuery.of(context).size.height * 0.06,
+              //   child: const Input(
+              //     color: Colors.cyan,
+              //     icon: Icon(Icons.email, color: Colors.cyan),
+              //     labelText: 'Email',
+              //   ),
+              // ),
               const SizedBox(
                 height: 12,
               ),
+              //   SizedBox(
+              //     width: MediaQuery.of(context).size.width * 0.8,
+              //     height: MediaQuery.of(context).size.height * 0.06,
+              //     child: const Input(
+              //       color: Colors.cyan,
+              //       icon: Icon(Icons.lock, color: Colors.cyan),
+              //       labelText: 'Password',
+              //     ),
+              //   ),
+              //   const SizedBox(
+              //   height: 12,
+              // ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.06,
-                child: const Input(
-                  color: Colors.cyan,
-                  icon: Icon(Icons.lock, color: Colors.cyan),
-                  labelText: 'Password',
-                ),
-              ),
-              const SizedBox(
-              height: 12,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.05,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ButtonStyle(
-                  shape: MaterialStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                height: MediaQuery.of(context).size.height * 0.05,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    shape: MaterialStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                     ),
                   ),
-                ),
-                child: const Text(
-                  'Sign in',
-                  style: TextStyle(color: Colors.white),
+                  child: const Text(
+                    'Sign in',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
-            ),
 
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.25,
-            ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.25,
+              ),
             ],
           ),
         ),

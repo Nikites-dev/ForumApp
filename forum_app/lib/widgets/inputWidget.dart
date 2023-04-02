@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Input extends StatelessWidget {
+class InputWidget extends StatelessWidget {
   static const double _widthScale = 0.8;
   final String labelText;
   final Color color;
   final Icon icon;
+  final TextEditingController? controller;
 
-  const Input(
-    TextEditingController emailController, {
+  const InputWidget(
+    this.controller, {
     super.key,
     this.labelText = "Text",
     this.color = Colors.black,
@@ -21,6 +22,7 @@ class Input extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width * _widthScale,
       child: TextField(
+        controller: controller,
         cursorColor: color,
         decoration: InputDecoration(
           label: Text(labelText),
