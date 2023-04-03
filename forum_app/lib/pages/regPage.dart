@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:forum_app/components/input.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:forum_app/widgets/inputWidget.dart';
 
@@ -117,9 +116,38 @@ class _RegPageState extends State<RegPage> {
               height: MediaQuery.of(context).size.height * 0.05,
               child: ElevatedButton(
                 onPressed: () {
-                  signUp();
-                  Navigator.pushNamed(context, '/home');
-                  print('true');
+                  if (_passwordController.text.isEmpty || _emailController.text.isEmpty || _usernameController.text.isEmpty)
+                  {
+                    final snackBar = SnackBar(
+                      content: const Text('Fill in all the fields!'),
+                      backgroundColor: Colors.primaries.first,
+                    );
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                  else if (_passwordController.text.length < 6)
+                  {
+                    final snackBar = SnackBar(
+                      content: const Text('Minimum 6'),
+                      backgroundColor: Colors.primaries.first,
+                    );
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                  else if (_passwordController.text != _passwordConfirmController.text)
+                  {
+                    final snackBar = SnackBar(
+                      content: const Text('Passwords don\'t match'),
+                      backgroundColor: Colors.primaries.first,
+                    );
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                  else
+                  {
+                    signUp();
+                    Navigator.pushNamed(context, '/');
+                  }
                 },
                 style: ButtonStyle(
                   shape: MaterialStatePropertyAll(

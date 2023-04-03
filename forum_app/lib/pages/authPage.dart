@@ -16,6 +16,7 @@ class _AuthPageState extends State<AuthPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+
   Future SignIn() async {
     var user =
         await _service.signIn(_emailController.text, _passwordController.text);
@@ -89,8 +90,20 @@ class _AuthPageState extends State<AuthPage> {
                 height: MediaQuery.of(context).size.height * 0.05,
                 child: ElevatedButton(
                   onPressed: () {
-                    SignIn();
-                    Navigator.pushNamed(context, '/home');
+                    if (_emailController.text.isEmpty || _passwordController.text.isEmpty)
+                    {
+                      final snackBar = SnackBar(
+                        content: const Text('Fill in all the fields!'),
+                        backgroundColor: Colors.primaries.first,
+                      );
+                    
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                    else
+                    {
+                      SignIn();
+                      Navigator.pushNamed(context, '/');
+                    }
                   },
                   style: ButtonStyle(
                     shape: MaterialStatePropertyAll(
