@@ -146,7 +146,7 @@ class _RegPageState extends State<RegPage> {
                   else
                   {
                     signUp();
-                    Navigator.pushNamed(context, '/');
+                    Navigator.pushNamed(context, '/interests');
                   }
                 },
                 style: ButtonStyle(

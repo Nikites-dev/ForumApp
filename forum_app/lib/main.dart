@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/pages/authPage.dart';
+import 'package:forum_app/pages/interestsPage.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
 import 'package:forum_app/pages/regPage.dart';
 import 'package:forum_app/services/auth/landing.dart';
@@ -27,6 +28,7 @@ class AppThemeMaterial extends StatelessWidget {
           '/reg': (context) => RegPage(),
           '/auth': (context) => const AuthPage(),
           '/home': (context) => const HomePage(),
+          '/interests': (context) => const InterestsPage(),
         },
         theme: ThemeData(
             primarySwatch: Colors.cyan, primaryColor: Colors.cyan.shade400),
