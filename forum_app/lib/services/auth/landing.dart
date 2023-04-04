@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forum_app/pages/interestsPage.dart';
 import 'package:provider/provider.dart';
 import 'package:forum_app/pages/regPage.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
