@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/widgets/inputWidget.dart';
 import 'package:forum_app/services/auth/service.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -97,7 +98,7 @@ class _AuthPageState extends State<AuthPage> {
                       );
 
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    } else {
+                    } else { // <-- при неверных данных перекидывает в regPage
                       SignIn();
                       Navigator.pushNamed(context, '/');
                     }
@@ -121,7 +122,7 @@ class _AuthPageState extends State<AuthPage> {
                   const Text('New to Forum?'),
                   TextButton(
                     onPressed: () =>
-                        Navigator.popAndPushNamed(context, "/insert"), // reg
+                        Navigator.popAndPushNamed(context, "/reg"),
                     child: const Text(
                       'Create an account.',
                       style: TextStyle(

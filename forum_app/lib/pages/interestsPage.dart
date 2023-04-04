@@ -1,9 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/models/Interests.dart';
-
+import 'package:firebase_database/firebase_database.dart';
+import 'package:forum_app/services/auth/service.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/interest.dart';
+import '../services/auth/model.dart';
 
 class InterestsPage extends StatefulWidget {
   const InterestsPage({super.key});
@@ -14,6 +19,26 @@ class InterestsPage extends StatefulWidget {
 
 class _InterestsPageState extends State<InterestsPage> {
   List<String> _selectedInterests = [];
+  String? userId;
+  DatabaseReference? dbRef;
+
+  @override
+  void initState() {
+    super.initState();
+    dbRef = FirebaseDatabase.instance.ref().child('user');
+    getLocalData();
+  }
+
+  UploadUserInterestsToDb() async {
+    if(userId != null) {
+      await dbRef!.child(userId.toString()).child("interests").set(_selectedInterests);
+    }
+  }
+
+  getLocalData() async { // Async func to handle Futures easier; or use Future.then
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId =  prefs.getString('userId');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +76,8 @@ class _InterestsPageState extends State<InterestsPage> {
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }
                     else{
-                      Navigator.pushNamed(context, "/");
+                      UploadUserInterestsToDb();
+                     Navigator.pushNamed(context, "/");
                     }
                   },
                   style: ButtonStyle(

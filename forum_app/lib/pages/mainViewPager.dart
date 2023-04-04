@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forum_app/pages/homeView.dart';
-import 'package:forum_app/pages/createView.dart';
+import 'package:forum_app/pages/profileView.dart';
 import 'package:forum_app/services/auth/service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -18,8 +19,13 @@ class _HomePageState extends State<HomePage> {
   int index = 0;
   final listPages = [
     const MainView(),
-    const CreateView(),
+    ProfileView(),
   ];
+
+  RemoveLocalData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('userId');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +36,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               await AuthServices().logOut();
+              await RemoveLocalData();
               Navigator.popAndPushNamed(context, '/');
               // Navigator.pop(context);
             },

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:forum_app/services/auth/model.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:forum_app/widgets/inputWidget.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/user.dart';
 
 class RegPage extends StatefulWidget {
   RegPage({super.key});
@@ -17,9 +23,30 @@ class _RegPageState extends State<RegPage> {
   final TextEditingController _passwordConfirmController =
       TextEditingController();
 
-  Future signUp() async {
-    var user = await _service.register(
+  DatabaseReference? dbRef;
+
+  @override
+  void initState() {
+    super.initState();
+    dbRef = FirebaseDatabase.instance.ref().child('user');
+  }
+
+  Future<bool> signUp() async {
+     var user = await _service.register(
         _emailController.text, _passwordController.text);
+
+     if(user != null) {
+       saveLocalData(user);
+       UploadUserToDb(user);
+       return true;
+     }
+     return false;
+  }
+
+  UploadUserToDb(UserModel user) async {
+      await dbRef!.child(user.id).child("username").set(_usernameController.text.toString());
+      await dbRef!.child(user.id).child("email").set(_emailController.text.toString());
+      await dbRef!.child(user.id).child("password").set(_passwordController.text.toString());
   }
 
   @override
@@ -27,6 +54,11 @@ class _RegPageState extends State<RegPage> {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+  }
+
+  saveLocalData(UserModel user) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('userId', user.id);
   }
 
   @override
@@ -115,7 +147,7 @@ class _RegPageState extends State<RegPage> {
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.05,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_passwordController.text.isEmpty || _emailController.text.isEmpty || _usernameController.text.isEmpty)
                   {
                     final snackBar = SnackBar(
@@ -128,7 +160,7 @@ class _RegPageState extends State<RegPage> {
                   else if (_passwordController.text.length < 6)
                   {
                     final snackBar = SnackBar(
-                      content: const Text('Minimum 6'),
+                      content: const Text('Password minimum 6 symbols!'),
                       backgroundColor: Colors.primaries.first,
                     );
                     
@@ -145,8 +177,17 @@ class _RegPageState extends State<RegPage> {
                   }
                   else
                   {
-                    signUp();
-                    Navigator.pushNamed(context, '/interests');
+                    if(await signUp()) {
+
+                      Navigator.pushNamed(context, '/interests');
+                    }
+                    else {
+                      var snackBar = SnackBar(
+                        content: const Text('Something wrong! :('),
+                        backgroundColor: Colors.primaries.first,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
                   }
                 },
                 style: ButtonStyle(
@@ -188,4 +229,5 @@ class _RegPageState extends State<RegPage> {
       ),
     );
   }
+
 }
