@@ -5,7 +5,9 @@ import 'package:forum_app/pages/mainViewPager.dart';
 import 'package:forum_app/pages/regPage.dart';
 import 'package:forum_app/services/auth/landing.dart';
 import 'package:forum_app/services/auth/service.dart';
+import 'package:forum_app/services/realtimeDb/insert.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,7 @@ class AppThemeMaterial extends StatelessWidget {
           '/reg': (context) => RegPage(),
           '/auth': (context) => const AuthPage(),
           '/home': (context) => const HomePage(),
+          '/insert': (context) => ccreate(),
         },
         theme: ThemeData(
             primarySwatch: Colors.cyan, primaryColor: Colors.cyan.shade400),

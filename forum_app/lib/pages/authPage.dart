@@ -16,7 +16,6 @@ class _AuthPageState extends State<AuthPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-
   Future SignIn() async {
     var user =
         await _service.signIn(_emailController.text, _passwordController.text);
@@ -90,17 +89,15 @@ class _AuthPageState extends State<AuthPage> {
                 height: MediaQuery.of(context).size.height * 0.05,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_emailController.text.isEmpty || _passwordController.text.isEmpty)
-                    {
+                    if (_emailController.text.isEmpty ||
+                        _passwordController.text.isEmpty) {
                       final snackBar = SnackBar(
                         content: const Text('Fill in all the fields!'),
                         backgroundColor: Colors.primaries.first,
                       );
-                    
+
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                    else
-                    {
+                    } else {
                       SignIn();
                       Navigator.pushNamed(context, '/');
                     }
@@ -123,7 +120,8 @@ class _AuthPageState extends State<AuthPage> {
                 children: [
                   const Text('New to Forum?'),
                   TextButton(
-                    onPressed: () => Navigator.popAndPushNamed(context, "/reg"),
+                    onPressed: () =>
+                        Navigator.popAndPushNamed(context, "/insert"), // reg
                     child: const Text(
                       'Create an account.',
                       style: TextStyle(
