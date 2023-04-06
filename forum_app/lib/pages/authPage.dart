@@ -98,7 +98,8 @@ class _AuthPageState extends State<AuthPage> {
                       );
 
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    } else { // <-- при неверных данных перекидывает в regPage
+                    } else {
+                      // <-- при неверных данных перекидывает в regPage
                       SignIn();
                       Navigator.pushNamed(context, '/');
                     }
@@ -121,8 +122,7 @@ class _AuthPageState extends State<AuthPage> {
                 children: [
                   const Text('New to Forum?'),
                   TextButton(
-                    onPressed: () =>
-                        Navigator.popAndPushNamed(context, "/reg"),
+                    onPressed: () => Navigator.popAndPushNamed(context, "/reg"),
                     child: const Text(
                       'Create an account.',
                       style: TextStyle(
