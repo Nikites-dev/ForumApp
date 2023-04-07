@@ -20,6 +20,7 @@ class Profile extends State<ProfileView> {
 
   File? file;
   String? userId;
+  String? userImage;
   ImagePicker image = ImagePicker();
   var url;
 
@@ -30,31 +31,27 @@ class Profile extends State<ProfileView> {
     super.initState();
     getLocalData();
     dbRef = FirebaseDatabase.instance.ref().child('user');
-    GetDataFromDb_data();
+    GetImg();
+    //  GetDataFromDb_data();
   }
 
-  void GetDataFromDb_data() async {
+  Future<String> GetDataFromDb_data() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('userId');
 
-    if (userId != null) {
-      DataSnapshot snapshot =
-          await dbRef!.child(userId.toString()).child('username').get();
-      username.text = snapshot.value.toString();
-    }
+    DataSnapshot snapshot = await dbRef!.child(userId.toString()).get();
+    username.text = snapshot.child('username').value.toString();
+    email.text = snapshot.child('email').value.toString();
+    userImage = snapshot.child('image').value.toString();
+    // url = snapshot.child('image').value.toString();
+    return snapshot.child('image').value.toString();
+  }
 
-    // if (snapshot.exists) {
-    //   username.text = snapshot.value.toString();
-    // } else {
-    //   print('No data available.');
-    //   username.text = 'No data available.';
-    // }
-
-    // DataSnapshot snapshot = await dbRef!.child('userId').get();
-
-    // username.text = dbRef.child(userId!).get('sd');
-    // email.text = Contact.Email!;
-    // url = Contact['url'];
+  void GetImg() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId');
+    DataSnapshot snapshot = await dbRef!.child(userId.toString()).get();
+    // url = snapshot.child('image').value.toString();
   }
 
   saveLocalData() async {
@@ -69,80 +66,103 @@ class Profile extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    String? str;
     return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: Container(
-                    height: 200,
-                    width: 200,
-                    child: file == null
-                        ? IconButton(
-                            icon: Icon(Icons.add_a_photo,
-                                size: 90, color: Colors.lightBlue),
+        child: Scaffold(
+      body: Column(
+        children: [
+          FutureBuilder(
+              future: GetDataFromDb_data(),
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                Widget child;
+                if (snapshot.connectionState == ConnectionState.done) {
+                  str = snapshot.data;
+                  child = Center(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Container(
+                                height: 200,
+                                width: 200,
+                                child: file == null
+                                    ? IconButton(
+                                        icon: str == null
+                                            ? Icon(Icons.add_a_photo,
+                                                size: 90,
+                                                color: Colors.lightBlue)
+                                            : Image.network('$str'),
+                                        onPressed: () {
+                                          getImage();
+                                        },
+                                      )
+                                    : MaterialButton(
+                                        height: 100,
+                                        child:
+                                            Image.file(file!, fit: BoxFit.fill),
+                                        onPressed: () {
+                                          getImage();
+                                        },
+                                      )),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: username,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Username',
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: email,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Email',
+                            ),
+                            maxLength: 10,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          MaterialButton(
+                            height: 40,
                             onPressed: () {
-                              getImage();
+                              if (file != null) {
+                                uploadFile();
+                              }
                             },
-                          )
-                        : MaterialButton(
-                            height: 100,
-                            child: Image.file(file!, fit: BoxFit.fill),
-                            onPressed: () {
-                              getImage();
-                            },
-                          )),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                controller: username,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: 'Username',
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                controller: email,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: 'Email',
-                ),
-                maxLength: 10,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              MaterialButton(
-                height: 40,
-                onPressed: () {
-                  if (file != null) {
-                    uploadFile();
-                  }
-                },
-                child: Text(
-                  "Add",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                ),
-                color: Colors.lightGreen,
-              ),
-            ],
-          ),
-        ),
+                            child: Text(
+                              "Add",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                            color: Colors.lightGreen,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+
+                  str = snapshot.data;
+                  return child;
+                } else {
+                  return CircularProgressIndicator();
+                }
+              }),
+        ],
       ),
-    );
+    ));
   }
 
   getImage() async {
@@ -157,7 +177,7 @@ class Profile extends State<ProfileView> {
       var imgfile = FirebaseStorage.instance
           .ref()
           .child("UserImages")
-          .child("/${dbRef?.child('username').get().toString()}.jpg");
+          .child("/${username.text}.jpg");
 
       UploadTask task = imgfile.putFile(file!);
       TaskSnapshot snapshot = await task;
@@ -167,6 +187,7 @@ class Profile extends State<ProfileView> {
         url = url;
       });
       if (url != null) {
+        await dbRef!.child(userId.toString()).child("image").set(url);
         // await dbRef!.child(userId).set(_usernameController.text.toString());
         // Map<String, String> User = {
         //   'username': username.text,
@@ -186,4 +207,6 @@ class Profile extends State<ProfileView> {
       print(e);
     }
   }
+
+  GetImgUser() {}
 }
