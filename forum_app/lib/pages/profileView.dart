@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter/src/widgets/framework.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 
 import '../models/user.dart';
 
@@ -23,6 +25,8 @@ class Profile extends State<ProfileView> {
   String? userImage;
   ImagePicker image = ImagePicker();
   var url;
+
+  bool isSelectUserImage = false;
 
   DatabaseReference? dbRef;
 
@@ -84,70 +88,162 @@ class Profile extends State<ProfileView> {
                         children: [
                           Center(
                             child: Container(
-                                height: 200,
-                                width: 200,
-                                child: file == null
-                                    ? IconButton(
-                                        icon: str == null
-                                            ? Icon(Icons.add_a_photo,
-                                                size: 90,
-                                                color: Colors.lightBlue)
-                                            : Image.network('$str'),
-                                        onPressed: () {
-                                          getImage();
-                                        },
-                                      )
-                                    : MaterialButton(
-                                        height: 100,
-                                        child:
-                                            Image.file(file!, fit: BoxFit.fill),
-                                        onPressed: () {
-                                          getImage();
-                                        },
-                                      )),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                            controller: username,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Username',
+                              height: 160,
+                              width: 160,
+                              child: Stack(children: [
+                                Center(
+                                  child: Container(
+                                    height: 160,
+                                    width: 160,
+                                    child: file == null
+                                        ? IconButton(
+                                            icon: str == null
+                                                ? Icon(Icons.add_a_photo,
+                                                    size: 90,
+                                                    color: Colors.lightBlue)
+                                                : CircleAvatar(
+                                                    radius: 70,
+                                                    backgroundImage:
+                                                        NetworkImage('$str'),
+                                                  ),
+                                            onPressed: () {
+                                              getImage();
+                                            },
+                                          )
+                                        : MaterialButton(
+                                            height: 100,
+                                            child: Image.file(file!,
+                                                fit: BoxFit.fill),
+                                            onPressed: () {
+                                              getImage();
+                                            },
+                                          ),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  child: Visibility(
+                                    visible: isSelectUserImage,
+                                    child: SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: Center(
+                                        child: CircleAvatar(
+                                          child: IconButton(
+                                            onPressed: () {
+                                              if (file != null) {
+                                                uploadFile();
+                                              }
+                                            },
+                                            icon: Icon(
+                                              Icons.save_as,
+                                              size: 22,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                            ),
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ]),
                             ),
+                          ),
+
+                          Text(
+                            username.text,
+                            style: TextStyle(
+                              fontSize: 23,
+                            ),
+                          ),
+
+                          Text(
+                            email.text,
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
                           SizedBox(
                             height: 20,
                           ),
-                          TextFormField(
-                            controller: email,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Email',
-                            ),
-                            maxLength: 10,
-                          ),
+
+                          // CupertinoSwitch(
+                          //   value: _switchValue,
+                          //   onChanged: (value) {
+                          //     setState(() {
+                          //       _switchValue = value;
+                          //     });
+                          //   },
+                          // ),
                           SizedBox(
-                            height: 20,
-                          ),
-                          MaterialButton(
-                            height: 40,
-                            onPressed: () {
-                              if (file != null) {
-                                uploadFile();
-                              }
-                            },
-                            child: Text(
-                              "Add",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
+                            height: 200,
+                            child: DefaultTabController(
+                              length: 2,
+                              child: Column(
+                                children: <Widget>[
+                                  Card(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    elevation: 0,
+                                    color: Color.fromARGB(255, 233, 232, 232),
+                                    child: ButtonsTabBar(
+                                      splashColor:
+                                          Color.fromARGB(255, 125, 228, 247),
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 30),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 255, 255, 255),
+                                      unselectedBackgroundColor:
+                                          Color.fromARGB(255, 233, 232, 232),
+                                      unselectedLabelStyle:
+                                          TextStyle(color: Colors.black),
+                                      labelStyle: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.normal),
+                                      tabs: [
+                                        Tab(
+                                          child: SizedBox(
+                                            width: 120,
+                                            child: Center(
+                                              child: Text(
+                                                'посты',
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Tab(
+                                          child: SizedBox(
+                                            width: 120,
+                                            child: Center(
+                                              child: Text('понравилось',
+                                                  style: TextStyle(
+                                                      color: Colors.black)),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: TabBarView(
+                                      children: <Widget>[
+                                        Center(
+                                          child: Icon(Icons.directions_car),
+                                        ),
+                                        Center(
+                                          child: Icon(Icons.directions_transit),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            color: Colors.lightGreen,
                           ),
                         ],
                       ),
@@ -170,6 +266,7 @@ class Profile extends State<ProfileView> {
     setState(() {
       file = File(img!.path);
     });
+    isSelectUserImage = true;
   }
 
   uploadFile() async {
@@ -188,6 +285,9 @@ class Profile extends State<ProfileView> {
       });
       if (url != null) {
         await dbRef!.child(userId.toString()).child("image").set(url);
+
+        isSelectUserImage = false;
+
         // await dbRef!.child(userId).set(_usernameController.text.toString());
         // Map<String, String> User = {
         //   'username': username.text,
