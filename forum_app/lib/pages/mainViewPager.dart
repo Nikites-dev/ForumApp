@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   // Future users = DBConnection().list();
   int index = 0;
   final listPages = [
-    const MainView(),
+     MainView(),
     ProfileView(),
   ];
 

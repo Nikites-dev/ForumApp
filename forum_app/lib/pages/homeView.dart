@@ -1,60 +1,111 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-
+import 'package:forum_app/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_listview/infinite_listview.dart';
 
-class MainView extends StatelessWidget {
+class MainView extends StatefulWidget {
   const MainView({super.key});
+
+
+  @override
+    State<MainView> createState() => _MainViewState();
+}
+
+class _MainViewState extends State<MainView> {
+  List<Post> posts = List.from(listPosts);
+  int index = 0;
+  onItemSearch(String value) {
+    setState(
+          () {
+        posts = listPosts
+            .where((element) => element.username!.contains(value))
+            .toList();
+        // return newDealList
+        //     .where(
+        //       (element) => element.title!.contains(value),
+        //     )
+        //     .toList();
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.17,
-            child: InfiniteListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.35,
-                    height: MediaQuery.of(context).size.width * 0.35,
-                    child: Card(
-                      child: ListTile(
-                        title: const Text('Horizontal'),
-                        subtitle: Text('Breaking news!!!$index'),
-                      ),
-                    ),
-                  ),
-                );
-              },
+    return ListView(
+      children: posts.map(
+            (post) {
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
             ),
-          ),
-          const Divider(
-            color: Colors.black,
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.45,
-            child: InfiniteListView.builder(itemBuilder: (context, index) {
-              return Center(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.7 * 0.25,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Card(
-                    child: ListTile(
-                      title: const Text('Vertical'),
-                      subtitle: Text('Листаюсь вертикально $index'),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.account_circle, size: 32,),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Text(post.username!),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Text('10 ч.'),
+                      ),
+                    ],),
+
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('interest'),
                     ),
-                  ),
+                  ],
                 ),
-              );
-            }),
-          )
-        ],
-      ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: new Text(post.title!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, ),),),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: new Text(post.text!, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),),)
+
+
+                  ],
+                ),
+              ],
+            ),
+
+
+
+          );
+        },
+      ).toList(),
     );
   }
 }
+
+
+// Row(
+// children: <Widget>[
+// Flexible(
+// child: Padding(
+// padding: const EdgeInsets.all(8.0),
+// child: new Text(post.title!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+// ),),
+// Flexible(
+// child: Padding(
+// padding: const EdgeInsets.all(8.0),
+// child: new Text(post.text.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
+// ),),
+// ],
+// ),
