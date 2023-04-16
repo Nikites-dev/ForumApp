@@ -4,6 +4,9 @@ import 'package:forum_app/pages/profileView.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../widgets/inputWidget.dart';
+import 'createPage.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
@@ -16,9 +19,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // List<User> users = List.from(DBConnection().listUserMap());
   // Future users = DBConnection().list();
+
+  final TextEditingController _searchController = TextEditingController();
   int index = 0;
   final listPages = [
-     MainView(),
+    MainView(),
     ProfileView(),
   ];
 
@@ -33,6 +38,18 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 224, 215, 215),
         actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 8.0, 28.0, 8.0),
+            child: SizedBox(
+              width: 250,
+              child: InputWidget(
+                _searchController,
+                color: Colors.black,
+                icon: Icon(Icons.search, color: Colors.cyan),
+                labelText: 'Search',
+              ),
+            ),
+          ),
           IconButton(
             onPressed: () async {
               await AuthServices().logOut();
@@ -46,7 +63,11 @@ class _HomePageState extends State<HomePage> {
       ),
       body: listPages.elementAt(index),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => CreatePage(
+                  name: "Rinat", email: "renat@lsd.net", phone: "zxvxvsfgsf")));
+        },
         backgroundColor: Color.fromARGB(255, 179, 172, 172),
         child: const Icon(
           Icons.add,

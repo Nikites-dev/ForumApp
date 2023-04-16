@@ -1,16 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/models/post.dart';
 import 'package:flutter/material.dart';
+import 'package:forum_app/pages/postPage.dart';
 import 'package:infinite_listview/infinite_listview.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
 
-
   @override
-    State<MainView> createState() => _MainViewState();
+  State<MainView> createState() => _MainViewState();
 }
 
 class _MainViewState extends State<MainView> {
@@ -18,7 +19,7 @@ class _MainViewState extends State<MainView> {
   int index = 0;
   onItemSearch(String value) {
     setState(
-          () {
+      () {
         posts = listPosts
             .where((element) => element.username!.contains(value))
             .toList();
@@ -31,62 +32,133 @@ class _MainViewState extends State<MainView> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: posts.map(
-            (post) {
+        (post) {
           return Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PostPage(post: post)));
+              },
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  'https://widget.teletype.app/popup/assets/images/bot-avatar.jpg'),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(1.0),
+                            child: Text(post.username!),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(1.0),
+                            child: Text('10 ч.'),
+                          ),
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Icon(Icons.account_circle, size: 32,),
+                        child: Text('interest'),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: new Text(
+                          SetText(post.title!),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: post.imgUrl == null
+                            ? new Text(
+                                SetText(post.text!),
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w300),
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: post.imgUrl!,
+                                placeholder: (context, url) =>
+                                    new CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    new Icon(Icons.error),
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(1.0),
-                        child: Text(post.username!),
+                        child: Container(
+                          child: Row(children: [
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                  child: Row(children: [
+                                    Icon(Icons.arrow_upward_rounded,
+                                        color: Colors.grey),
+                                    SizedBox(width: 2.0),
+                                    Text("1412",
+                                        style: TextStyle(color: Colors.grey)),
+                                  ]),
+                                  onPressed: () {},
+                                  style: ButtonStyle(
+                                    elevation:
+                                        MaterialStateProperty.all<double>(0),
+                                    backgroundColor:
+                                        MaterialStatePropertyAll(Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(children: [
+                              ElevatedButton(
+                                onPressed: () {},
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.message_outlined,
+                                        color: Colors.grey),
+                                    SizedBox(width: 5.0),
+                                    Text(
+                                      "8",
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                                style: ButtonStyle(
+                                  elevation:
+                                      MaterialStateProperty.all<double>(0),
+                                  backgroundColor:
+                                      MaterialStatePropertyAll(Colors.white),
+                                ),
+                              ),
+                            ]),
+                          ]),
+                        ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: Text('10 ч.'),
-                      ),
-                    ],),
-
-
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text('interest'),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: new Text(post.title!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, ),),),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: new Text(post.text!, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),),)
-
-
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-
-
-
           );
         },
       ).toList(),
@@ -94,6 +166,12 @@ class _MainViewState extends State<MainView> {
   }
 }
 
+String SetText(String text) {
+  if (text.length > 150) {
+    return text.toString().substring(0, 150).trim() + "...";
+  }
+  return text;
+}
 
 // Row(
 // children: <Widget>[
