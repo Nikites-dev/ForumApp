@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/widgets/inputWidget.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'interestsPage.dart';
 
 class CreatePage extends StatelessWidget {
@@ -27,7 +28,9 @@ class CreatePage extends StatelessWidget {
           child: InkWell(
             child: Row(
               children: [
-                Text('далее'),
+                Text(
+                  'Далее',
+                ),
                 Icon(Icons.keyboard_arrow_right_rounded),
               ],
             ),
@@ -53,16 +56,12 @@ class CreatePage extends StatelessWidget {
                     maxLines: null,
                     maxLength: 200,
                     textInputAction: TextInputAction.next,
-                    style: TextStyle(
-                        fontFamily: 'ZillaSlab',
-                        fontSize: 32,
-                        fontWeight: FontWeight.w700),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
                     decoration: InputDecoration.collapsed(
                       hintText: 'Title',
                       hintStyle: TextStyle(
                           color: Colors.grey.shade400,
                           fontSize: 32,
-                          fontFamily: 'ZillaSlab',
                           fontWeight: FontWeight.w700),
                       border: InputBorder.none,
                     ),

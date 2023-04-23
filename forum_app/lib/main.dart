@@ -7,6 +7,7 @@ import 'package:forum_app/pages/regPage.dart';
 import 'package:forum_app/services/auth/landing.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:forum_app/services/realtimeDb/insert.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -34,7 +35,9 @@ class AppThemeMaterial extends StatelessWidget {
           '/interests': (context) => const InterestsPage(),
         },
         theme: ThemeData(
-            primarySwatch: Colors.cyan, primaryColor: Colors.cyan.shade400),
+            fontFamily: GoogleFonts.montserrat().fontFamily,
+            primarySwatch: Colors.cyan,
+            primaryColor: Colors.cyan.shade400),
         debugShowCheckedModeBanner: false,
       ),
     );
