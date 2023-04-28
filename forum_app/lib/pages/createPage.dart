@@ -3,13 +3,17 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/widgets/inputWidget.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/post.dart';
 import 'interestsPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CreatePage extends StatelessWidget {
   String name, email, phone;
   final TextEditingController edTitlePost = TextEditingController();
   final TextEditingController edTextPost = TextEditingController();
-
+  Post? newPost = new Post();
+ // SharedPreferences prefs =  SharedPreferences.getInstance();
   CreatePage(
       {super.key,
       required this.name,
@@ -35,8 +39,20 @@ class CreatePage extends StatelessWidget {
               ],
             ),
             onTap: () => {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => InterestsPage()))
+
+              if(edTextPost.text.trim() != "" && edTitlePost.text.trim() != "")
+              {
+
+                newPost?.title = edTitlePost.text.toString(),
+                newPost?.text = edTextPost.text.toString(),
+              //   newPost?.username = prefs.getString('userId'),
+
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => InterestsPage(post: newPost,)))  
+              } else
+              {
+              
+              }
             },
           ),
         )

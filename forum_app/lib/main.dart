@@ -32,7 +32,7 @@ class AppThemeMaterial extends StatelessWidget {
           '/auth': (context) => const AuthPage(),
           '/home': (context) => const HomePage(),
           '/insert': (context) => ccreate(),
-          '/interests': (context) => const InterestsPage(),
+          '/interests': (context) => InterestsPage(post: null,),
         },
         theme: ThemeData(
             fontFamily: GoogleFonts.montserrat().fontFamily,

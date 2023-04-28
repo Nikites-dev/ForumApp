@@ -8,10 +8,14 @@ import 'package:forum_app/services/auth/service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/interest.dart';
+import '../models/post.dart';
 import '../services/auth/model.dart';
 
 class InterestsPage extends StatefulWidget {
-  const InterestsPage({super.key});
+ Post? post;
+ InterestsPage({super.key, required this.post});
+
+
 
   @override
   State<InterestsPage> createState() => _InterestsPageState();
