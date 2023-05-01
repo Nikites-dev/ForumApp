@@ -32,21 +32,30 @@ class _RegPageState extends State<RegPage> {
   }
 
   Future<bool> signUp() async {
-     var user = await _service.register(
+    var user = await _service.register(
         _emailController.text, _passwordController.text);
 
-     if(user != null) {
-       saveLocalData(user);
-       UploadUserToDb(user);
-       return true;
-     }
-     return false;
+    if (user != null) {
+      saveLocalData(user);
+      UploadUserToDb(user);
+      return true;
+    }
+    return false;
   }
 
   UploadUserToDb(UserModel user) async {
-      await dbRef!.child(user.id).child("username").set(_usernameController.text.toString());
-      await dbRef!.child(user.id).child("email").set(_emailController.text.toString());
-      await dbRef!.child(user.id).child("password").set(_passwordController.text.toString());
+    await dbRef!
+        .child(user.id)
+        .child("username")
+        .set(_usernameController.text.toString());
+    await dbRef!
+        .child(user.id)
+        .child("email")
+        .set(_emailController.text.toString());
+    await dbRef!
+        .child(user.id)
+        .child("password")
+        .set(_passwordController.text.toString());
   }
 
   @override
@@ -148,40 +157,34 @@ class _RegPageState extends State<RegPage> {
               height: MediaQuery.of(context).size.height * 0.05,
               child: ElevatedButton(
                 onPressed: () async {
-                  if (_passwordController.text.isEmpty || _emailController.text.isEmpty || _usernameController.text.isEmpty)
-                  {
+                  if (_passwordController.text.isEmpty ||
+                      _emailController.text.isEmpty ||
+                      _usernameController.text.isEmpty) {
                     final snackBar = SnackBar(
                       content: const Text('Fill in all the fields!'),
                       backgroundColor: Colors.primaries.first,
                     );
-                    
+
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                  else if (_passwordController.text.length < 6)
-                  {
+                  } else if (_passwordController.text.length < 6) {
                     final snackBar = SnackBar(
                       content: const Text('Password minimum 6 symbols!'),
                       backgroundColor: Colors.primaries.first,
                     );
-                    
+
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                  else if (_passwordController.text != _passwordConfirmController.text)
-                  {
+                  } else if (_passwordController.text !=
+                      _passwordConfirmController.text) {
                     final snackBar = SnackBar(
                       content: const Text('Passwords don\'t match'),
                       backgroundColor: Colors.primaries.first,
                     );
-                    
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                  else
-                  {
-                    if(await signUp()) {
 
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } else {
+                    if (await signUp()) {
                       Navigator.pushNamed(context, '/interests');
-                    }
-                    else {
+                    } else {
                       var snackBar = SnackBar(
                         content: const Text('Something wrong! :('),
                         backgroundColor: Colors.primaries.first,
@@ -229,5 +232,4 @@ class _RegPageState extends State<RegPage> {
       ),
     );
   }
-
 }
