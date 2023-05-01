@@ -1,30 +1,29 @@
-
 import '../models/post.dart';
 
 List<Post> listPosts = [
-    Post(
-          Username: "user1",
-          CreatePost: DateTime.now(),
-          Text: "teeeext",
-    ),
-    Post(
-          Username: "user2",
-          CreatePost: DateTime.now(),
-          Text: "ddddddddd",
-    ),
-    Post(
-          Username: "user3",
-          CreatePost: DateTime.now(),
-          Text: "ffffffff",
-    ),
-    Post(
-          Username: "user4",
-          CreatePost: DateTime.now(),
-          Text: "tsdfsdfext",
-    ),
-    Post(
-          Username: "user5",
-          CreatePost: DateTime.now(),
-          Text: "fsdfsettrtrt",
-    ),
-  ];
+  Post(
+    username: "user1",
+    createPost: DateTime.now(),
+    text: "teeeext",
+  ),
+  Post(
+    username: "user2",
+    createPost: DateTime.now(),
+    text: "ddddddddd",
+  ),
+  Post(
+    username: "user3",
+    createPost: DateTime.now(),
+    text: "ffffffff",
+  ),
+  Post(
+    username: "user4",
+    createPost: DateTime.now(),
+    text: "tsdfsdfext",
+  ),
+  Post(
+    username: "user5",
+    createPost: DateTime.now(),
+    text: "fsdfsettrtrt",
+  ),
+];
