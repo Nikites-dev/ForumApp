@@ -1,26 +1,45 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:forum_app/widgets/inputWidget.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:forum_app/pages/mainViewPager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/post.dart';
-import 'interestsPage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 
-class CreatePage extends StatelessWidget {
-  String name, email, phone;
+import '../models/post.dart';
+import '../models/user.dart';
+import 'interestsPage.dart';
+
+class CreatePage extends State<StatefulWidget> {
+  
+  // String name, email, phone;
   final TextEditingController edTitlePost = TextEditingController();
   final TextEditingController edTextPost = TextEditingController();
   Post? newPost = new Post();
   String? username;
-  
+  File? file;
+
+  String? userId;
+  String? userImage;
+  ImagePicker image = ImagePicker();
+  var url;
+
+  bool isSelectUserImage = false;
+
+ DatabaseReference? dbRef;
+
+
+
+ 
  // SharedPreferences prefs =  SharedPreferences.getInstance();
-  CreatePage(
-      {super.key,
-      required this.name,
-      required this.email,
-      required this.phone});
+  // CreatePage(
+  //     {
+  //     required this.name,
+  //     required this.email,
+  //     required this.phone});
 
 
 
@@ -30,6 +49,9 @@ class CreatePage extends StatelessWidget {
     List<Choice> choices = <Choice>[
       Choice(title: "Menu 1", icon: Icons.arrow_drop_up_rounded),
     ];
+
+ 
+
     SharedPreferences prefs;
     return Scaffold(
       appBar: AppBar(actions: [
@@ -54,6 +76,7 @@ class CreatePage extends StatelessWidget {
                 newPost?.username = username.toString(),
                 newPost?.title = edTitlePost.text.toString(),
                 newPost?.text = edTextPost.text.toString(),
+                newPost?.createPost = DateTime.now(),
               //   newPost?.username = prefs.getString('userId'),
 
                 Navigator.of(context).push(
@@ -72,6 +95,19 @@ class CreatePage extends StatelessWidget {
             Container(height: 80),
             Column(
               children: [
+
+               file != null? 
+                           MaterialButton(
+                                            height: 100,
+                                            child: Image.file(file!,
+                                                fit: BoxFit.fill),
+                                            onPressed: () {
+                                              getImage();
+                                            },
+                                          ):Text('dsd'),
+                 
+
+
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
@@ -135,7 +171,12 @@ class CreatePage extends StatelessWidget {
               //   },
               // ),
 
-              InkWell(onTap: () => {}, child: Icon(Icons.image_outlined)),
+              InkWell(onTap: () => {
+            
+                  getImage(),
+                                              
+            
+              }, child: Icon(Icons.image_outlined)),
 
               InkWell(
                 onTap: () => {FocusManager.instance.primaryFocus?.unfocus()},
@@ -147,6 +188,61 @@ class CreatePage extends StatelessWidget {
       ),
     );
   }
+
+
+ 
+ getImage() async {
+    var img = await image.pickImage(source: ImageSource.gallery);
+
+      setState(() {
+      file = File(img!.path);
+    });
+
+    isSelectUserImage = true;
+  }
+
+  uploadFile() async {
+    try {
+      var imgfile = FirebaseStorage.instance
+          .ref()
+          .child("UserImages")
+          .child("/${username}.jpg");
+
+      UploadTask task = imgfile.putFile(file!);
+      TaskSnapshot snapshot = await task;
+
+      url = await snapshot.ref.getDownloadURL();
+  
+        url = url;
+    
+      if (url != null) {
+        await dbRef!.child(userId.toString()).child("image").set(url);
+
+        isSelectUserImage = false;
+
+        // await dbRef!.child(userId).set(_usernameController.text.toString());
+        // Map<String, String> User = {
+        //   'username': username.text,
+        //   'email': email.text,
+        // };
+
+        // dbRef!.push().set(User).whenComplete(() {
+        //   Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (_) => HomePage(),
+        //     ),
+        //   );
+        // });
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
+  GetImgUser() {}
+
+
 }
 
 class Choice {

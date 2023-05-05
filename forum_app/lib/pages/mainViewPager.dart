@@ -64,9 +64,8 @@ class _HomePageState extends State<HomePage> {
       body: listPages.elementAt(index),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => CreatePage(
-                  name: "Rinat", email: "renat@lsd.net", phone: "zxvxvsfgsf")));
+          // Navigator.of(context).push(MaterialPageRoute(
+          //     builder: (context) => Navigator.(context) => CreatePage()));
         },
         backgroundColor: Color.fromARGB(255, 179, 172, 172),
         child: const Icon(
