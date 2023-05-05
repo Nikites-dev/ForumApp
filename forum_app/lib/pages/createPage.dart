@@ -13,6 +13,8 @@ class CreatePage extends StatelessWidget {
   final TextEditingController edTitlePost = TextEditingController();
   final TextEditingController edTextPost = TextEditingController();
   Post? newPost = new Post();
+  String? username;
+  
  // SharedPreferences prefs =  SharedPreferences.getInstance();
   CreatePage(
       {super.key,
@@ -20,11 +22,15 @@ class CreatePage extends StatelessWidget {
       required this.email,
       required this.phone});
 
+
+
+
   @override
   Widget build(BuildContext context) {
     List<Choice> choices = <Choice>[
       Choice(title: "Menu 1", icon: Icons.arrow_drop_up_rounded),
     ];
+    SharedPreferences prefs;
     return Scaffold(
       appBar: AppBar(actions: [
         Padding(
@@ -38,11 +44,14 @@ class CreatePage extends StatelessWidget {
                 Icon(Icons.keyboard_arrow_right_rounded),
               ],
             ),
-            onTap: () => {
+            onTap: () async => {
 
               if(edTextPost.text.trim() != "" && edTitlePost.text.trim() != "")
               {
+                  prefs = await SharedPreferences.getInstance(),
+                  username = prefs.getString('username'),
 
+                newPost?.username = username.toString(),
                 newPost?.title = edTitlePost.text.toString(),
                 newPost?.text = edTextPost.text.toString(),
               //   newPost?.username = prefs.getString('userId'),

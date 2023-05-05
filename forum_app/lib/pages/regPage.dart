@@ -68,6 +68,7 @@ class _RegPageState extends State<RegPage> {
   saveLocalData(UserModel user) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('userId', user.id);
+    prefs.setString('username', _usernameController.text.toString());
   }
 
   @override

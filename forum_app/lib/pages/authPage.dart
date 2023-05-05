@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:forum_app/services/auth/model.dart';
 import 'package:forum_app/widgets/inputWidget.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -16,11 +18,37 @@ class _AuthPageState extends State<AuthPage> {
   final AuthServices _service = AuthServices();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  DatabaseReference? dbRef;
+  String? userId;
+
+@override
+  void initState() {
+    super.initState();
+    dbRef = FirebaseDatabase.instance.ref().child('user');
+  }
 
   Future SignIn() async {
     var user =
         await _service.signIn(_emailController.text, _passwordController.text);
+    userId = user!.id.toString();
+    if(user != null) {
+    GetDataFromDb_data();
+    }
   }
+
+Future GetDataFromDb_data() async {
+  
+  
+
+      DataSnapshot snapshot = await dbRef!.child(userId!).get();
+      String? username = snapshot.child('username').value.toString();
+  
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('userId', userId!);
+      prefs.setString('username', username);
+  }
+
+
 
   @override
   void dispose() {
@@ -99,9 +127,9 @@ class _AuthPageState extends State<AuthPage> {
 
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     } else {
-                      // <-- при неверных данных перекидывает в regPage
+                   
                       SignIn();
-                      Navigator.pushNamed(context, '/');
+                       Navigator.pushNamed(context, '/');
                     }
                   },
                   style: ButtonStyle(

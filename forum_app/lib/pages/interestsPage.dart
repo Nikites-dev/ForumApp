@@ -53,23 +53,20 @@ class _InterestsPageState extends State<InterestsPage> {
 
   UploadPostToDb() async {
     if (post != null) {
-// dbRef!.child('post').push(
-//       post.comments
-//    )
-//    .then((snapshot) => {
-//       ref.child(snapshot.key).update({
-//          "id": snapshot.key
-//       })
-//    });
+      
+      var newKey = dbRef!.child('post').push();
+      var keyValue = newKey.key.toString();
 
-      // await dbRef!.child('post').set(post?.username.toString());
-      // await dbRef!.child('post').set(post?.title.toString());
-      // await dbRef!.child('post').set(post?.text.toString());
-      // await dbRef!.child('post').set(post?.imgUrl.toString());
-      // await dbRef!.child('post').set(post?.interestsId.toString());
-      // await dbRef!.child('post').set(post?.createPost.toString());
-      // await dbRef!.child('post').set(post?.comments.toString());
-      // await dbRef!.child('post').set(post?.likes.toString());
+    //  await dbRef!.child('post').child(keyValue).set({post});
+
+      await dbRef!.child('post').child(keyValue).child('username').set(post?.username.toString());
+      await dbRef!.child('post').child(keyValue).child('title').set(post?.title.toString());
+      await dbRef!.child('post').child(keyValue).child('text').set(post?.text.toString());
+      await dbRef!.child('post').child(keyValue).child('imgUrl').set(post?.imgUrl.toString());
+      await dbRef!.child('post').child(keyValue).child('interestsId').set(post?.interestsId.toString());
+      await dbRef!.child('post').child(keyValue).child('createPost').set(post?.createPost.toString());
+      await dbRef!.child('post').child(keyValue).child('comments').set(post?.comments.toString());
+      await dbRef!.child('post').child(keyValue).child('likes').set(post?.likes.toString());
     }
   }
 
