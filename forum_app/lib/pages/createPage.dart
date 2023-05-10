@@ -8,13 +8,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
-
+import 'package:xid/xid.dart';
 import '../models/post.dart';
 import '../models/user.dart';
 import 'interestsPage.dart';
 
-class CreatePage extends State<StatefulWidget> {
-  
+class CreatePage extends StatefulWidget {
+  @override
+  State<CreatePage> createState() => Create();
+}
+
+class Create extends State<CreatePage> {
+
   // String name, email, phone;
   final TextEditingController edTitlePost = TextEditingController();
   final TextEditingController edTextPost = TextEditingController();
@@ -28,20 +33,8 @@ class CreatePage extends State<StatefulWidget> {
   var url;
 
   bool isSelectUserImage = false;
-
+  var xid = Xid();
  DatabaseReference? dbRef;
-
-
-
- 
- // SharedPreferences prefs =  SharedPreferences.getInstance();
-  // CreatePage(
-  //     {
-  //     required this.name,
-  //     required this.email,
-  //     required this.phone});
-
-
 
 
   @override
@@ -70,15 +63,16 @@ class CreatePage extends State<StatefulWidget> {
 
               if(edTextPost.text.trim() != "" && edTitlePost.text.trim() != "")
               {
+
+
                   prefs = await SharedPreferences.getInstance(),
                   username = prefs.getString('username'),
-
                 newPost?.username = username.toString(),
                 newPost?.title = edTitlePost.text.toString(),
                 newPost?.text = edTextPost.text.toString(),
                 newPost?.createPost = DateTime.now(),
               //   newPost?.username = prefs.getString('userId'),
-
+                uploadFile(),
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => InterestsPage(post: newPost,)))  
               } else
@@ -97,14 +91,14 @@ class CreatePage extends State<StatefulWidget> {
               children: [
 
                file != null? 
-                           MaterialButton(
-                                            height: 100,
-                                            child: Image.file(file!,
-                                                fit: BoxFit.fill),
-                                            onPressed: () {
-                                              getImage();
-                                            },
-                                          ):Text('dsd'),
+                 MaterialButton(
+                  height: 100,
+                  child: Image.file(file!,
+                      fit: BoxFit.fill),
+                  onPressed: () {
+                    getImage();
+                  },
+                ):Text('dsd'),
                  
 
 
@@ -193,7 +187,6 @@ class CreatePage extends State<StatefulWidget> {
  
  getImage() async {
     var img = await image.pickImage(source: ImageSource.gallery);
-
       setState(() {
       file = File(img!.path);
     });
@@ -205,8 +198,8 @@ class CreatePage extends State<StatefulWidget> {
     try {
       var imgfile = FirebaseStorage.instance
           .ref()
-          .child("UserImages")
-          .child("/${username}.jpg");
+          .child("PostImages")
+          .child("/${xid.toString()}.jpg");
 
       UploadTask task = imgfile.putFile(file!);
       TaskSnapshot snapshot = await task;
@@ -216,7 +209,7 @@ class CreatePage extends State<StatefulWidget> {
         url = url;
     
       if (url != null) {
-        await dbRef!.child(userId.toString()).child("image").set(url);
+        newPost?.imgUrl = url.toString();
 
         isSelectUserImage = false;
 
