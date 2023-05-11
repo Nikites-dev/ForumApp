@@ -7,7 +7,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/interest.dart';
 import '../models/post.dart';
 import '../services/auth/model.dart';
 
