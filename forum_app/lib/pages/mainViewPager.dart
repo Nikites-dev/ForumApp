@@ -66,6 +66,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           // Navigator.of(context).push(MaterialPageRoute(
           //     builder: (context) => Navigator.(context) => CreatePage()));
+          Navigator.popAndPushNamed(context, '/create');
         },
         backgroundColor: Color.fromARGB(255, 179, 172, 172),
         child: const Icon(

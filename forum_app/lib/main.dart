@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/pages/authPage.dart';
+import 'package:forum_app/pages/createPage.dart';
 import 'package:forum_app/pages/interestsPage.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
 import 'package:forum_app/pages/regPage.dart';
@@ -33,6 +34,7 @@ class AppThemeMaterial extends StatelessWidget {
           '/home': (context) => const HomePage(),
           '/insert': (context) => ccreate(),
           '/interests': (context) => InterestsPage(post: null,),
+          '/create': (context) => CreatePage(),
         },
         theme: ThemeData(
             fontFamily: GoogleFonts.montserrat().fontFamily,
