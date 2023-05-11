@@ -57,15 +57,19 @@ class _InterestsPageState extends State<InterestsPage> {
       var keyValue = newKey.key.toString();
 
     //  await dbRef!.child('post').child(keyValue).set({post});
+      post!.id = keyValue;
 
-      await dbRef!.child('post').child(keyValue).child('username').set(post?.username.toString());
-      await dbRef!.child('post').child(keyValue).child('title').set(post?.title.toString());
-      await dbRef!.child('post').child(keyValue).child('text').set(post?.text.toString());
-      await dbRef!.child('post').child(keyValue).child('imgUrl').set(post?.imgUrl.toString());
-      await dbRef!.child('post').child(keyValue).child('interestsId').set(post?.interestsId.toString());
-      await dbRef!.child('post').child(keyValue).child('createPost').set(post?.createPost.toString());
-      await dbRef!.child('post').child(keyValue).child('comments').set(post?.comments.toString());
-      await dbRef!.child('post').child(keyValue).child('likes').set(post?.likes.toString());
+      var userId = Provider.of<UserModel?>(context, listen: false)!.id;
+
+      dbRef!.child('post').child(keyValue).child('id').set(post?.id.toString());
+      dbRef!.child('post').child(keyValue).child('username').set(userId);
+      dbRef!.child('post').child(keyValue).child('title').set(post?.title.toString());
+      dbRef!.child('post').child(keyValue).child('text').set(post?.text.toString());
+      dbRef!.child('post').child(keyValue).child('imgUrl').set(post?.imgUrl.toString());
+      dbRef!.child('post').child(keyValue).child('interestsId').set(post?.interestsId.toString());
+      dbRef!.child('post').child(keyValue).child('createPost').set(post?.createPost.toString());
+      dbRef!.child('post').child(keyValue).child('comments').set(post?.comments.toString());
+      dbRef!.child('post').child(keyValue).child('likes').set(post?.likes.toString());
     }
   }
 
@@ -112,10 +116,10 @@ class _InterestsPageState extends State<InterestsPage> {
                 } else {
                   if (post == null) {
                     UploadUserInterestsToDb();
-                    Navigator.pushNamed(context, "/");
+                    Navigator.popAndPushNamed(context, "/");
                   } else {
                     UploadPostToDb();
-                    Navigator.pushNamed(context, "/home");
+                    Navigator.popAndPushNamed(context, "/home");
                   }
                 }
               },

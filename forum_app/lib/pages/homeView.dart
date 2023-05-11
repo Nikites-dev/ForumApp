@@ -34,12 +34,16 @@ class _MainViewState extends State<MainView> {
   Future<List<Post>> getListPosts() async {
     final snapshot = await FirebaseDatabase.instance.ref('post').get();
 
-    final map = snapshot.value as Map<dynamic, dynamic>;
+    if (snapshot.value != null)
+    {
+      final map = snapshot.value as Map<dynamic, dynamic>;
 
-    map.forEach((key, value) {
-      final user = Post.fromMap(value);
-      posts.add(user);
-    });
+      map.forEach((key, value) {
+        final user = Post.fromMap(value);
+        posts.add(user);
+      });
+    }
+    
     return posts;
   }
 
@@ -117,9 +121,8 @@ class _MainViewState extends State<MainView> {
                                               .spaceBetween,
                                           children: [
                                             Row(
-                                              children: [
+                                              children: [                              
                                                  FutureBuilder(
-
                                                      future: GetUserFromDb(post.username.toString()),
                                                   builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
                                                   Widget childUser;
@@ -174,9 +177,9 @@ class _MainViewState extends State<MainView> {
                                           children: [
                                             Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child: new Text(
+                                              child: Text(
                                                 SetText(post.title!),
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.w400,
                                                 ),

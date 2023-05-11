@@ -152,7 +152,7 @@ class Create extends State<CreatePage> {
           ]),
         ),
         bottomNavigationBar: BottomAppBar(
-            child: Padding(
+          child: Padding(
           padding: const EdgeInsets.all(14),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -181,7 +181,7 @@ class Create extends State<CreatePage> {
 
               InkWell(
                 onTap: () => {FocusManager.instance.primaryFocus?.unfocus()},
-                child: Icon(Icons.arrow_drop_down_rounded),
+                child: const Icon(Icons.arrow_drop_down_rounded),
               ),
             ],
           ),
@@ -194,7 +194,10 @@ class Create extends State<CreatePage> {
  getImage() async {
     var img = await image.pickImage(source: ImageSource.gallery);
       setState(() {
-      file = File(img!.path);
+        if (img != null)
+        {
+          file = File(img.path);
+        }
     });
 
     isSelectUserImage = true;

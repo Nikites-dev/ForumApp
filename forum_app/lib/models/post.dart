@@ -1,6 +1,7 @@
 import 'package:forum_app/models/comment.dart';
 
 class Post {
+  String? id;
   String? username;
   int? interestsId;
   String? title;
@@ -18,79 +19,41 @@ class Post {
       this.interestsId,
       this.createPost,
       this.comments,
-      this.likes});
+      this.likes,
+      this.id});
 
   factory Post.fromMap(Map<dynamic, dynamic> map) {
+    List<Comment> comments = [];
+    List<String> likes = [];
+
+    if (map['comments'] != "null")
+    {
+      ((map['comments'] as Map<dynamic, dynamic>)).forEach((key, value) {
+        var commentValue = value as Map<dynamic, dynamic>;
+        final comment = Comment((commentValue)['username'],
+          (commentValue)['text']);
+        comments.add(comment); 
+      });
+    }
+
+    if (map['likes'] != "null")
+    {
+      map['likes'].forEach((obj) {likes.add(obj.toString());});
+    }
+
     return Post(
+      id: map['id'] ?? '',
       username: map['username'] ?? '',
       title: map['title'] ?? '',
       text: map['text'] ?? '',
       imgUrl: map['imgUrl'] ?? '',
       interestsId: int.parse(map['interestsId']?? '') ,
       createPost: DateTime.parse(map['createPost'] ?? ''),
-      comments: map['comments'] == "null" ? null:map['comments'],
-      likes: map['likes'] == "null" ? null:map['likes'],
+      comments: map['comments'] == "null" ? null : comments,
+      likes: map['likes'] == "null" ? null : likes,
     );
   }
 }
-
-
-
-List<Post> listPosts = [
-  Post(
-    username: "Username",
-    title: "скейтеры что самое тупое вам говорили люди (апвоут)",
-    text:
-        "Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  Something text... Long text...  ",
-    comments: [
-      Comment("Rinat", "Text text text text text text text text text text text text text ...."),
-      Comment("Rinat", "Text text text text text ...."),
-      Comment("Rinat", "Text text text text text text text text text text text text text ...."),
-      Comment("Rinat", "Text text text text text ...."),
-      Comment("Rinat", "Text text text text text text text text text text text text text ...."),
-      Comment("Rinat", "Text text text text text ...."),
-      Comment("Rinat", "Text text text text text text text text text text text text text ...."),
-      Comment("Rinat", "Text text text text text ...."),
-      Comment("Rinat", "Text text text text text text text text text text text text text ...."),
-      Comment("Rinat", "Text text text text text ...."),
-      Comment("Rinat", "Text text text text text text text text text text text text text ...."),
-      Comment("Rinat", "Text text text text text ...."),
-    ],
-    createPost: null,
-    likes: null,
-    imgUrl: null,
-  ),
-  Post(
-    username: "Username2",
-    title:
-        "Что вы в детстве делали с животными и считали это смешным, а сейчас вы думаете что вы были живодёрами",
-    text: "просто был личный опыт :/",
-    comments: null,
-    createPost: null,
-    likes: null,
-    imgUrl: 'https://patentus.ru/blog/wp-content/uploads/2021/10/1-2.jpg',
-  ),
-  Post(
-    username: "Username",
-    title:
-        "Я ребенок выросший домашним насилием и на моих глазах мою сестру купали в любви пока меня били ногами или же деревянными палками по ногам задавайте вопросы",
-    text: "да да я существую",
-    comments: null,
-    createPost: null,
-    likes: null,
-    imgUrl: null,
-  ),
-  Post(
-    username: "Username4",
-    title: "cool cool cool cool cool",
-    text: "",
-    comments: null,
-    createPost: null,
-    likes: null,
-    imgUrl:
-        'https://images.unsplash.com/photo-1679764376519-807d8b7ea416?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxODY2Nzh8MHwxfHJhbmRvbXx8fHx8fHx8fDE2ODE2MzI3OTM&ixlib=rb-4.0.3&q=80&w=1080',
-  ),
-];
 
 
 
