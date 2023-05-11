@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:forum_app/models/Interests.dart';
 import 'package:forum_app/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/pages/postPage.dart';
@@ -25,6 +26,7 @@ class _MainViewState extends State<MainView> {
   List<Post> posts = [];
   DatabaseReference? dbRef;
   DatabaseReference? dbRefUser;
+  int index = 0;
 
   Future<List<Post>> getListPosts() async {
     final snapshot = await FirebaseDatabase.instance.ref('post').get();
@@ -46,21 +48,20 @@ class _MainViewState extends State<MainView> {
   }
 
   Future<User> GetUserFromDb(String userId) async {
-
     DataSnapshot snapshot = await dbRefUser!.child(userId.toString()).get() ;
-
-    // String Username = snapshot.child('username').value.toString();
-    // userDb?.Email = snapshot.child('email').value.toString();
-    // userDb?.Image =  snapshot.child('image').value.toString();
-
-    return new User(Username: snapshot.child('username').value.toString(), Email: snapshot.child('email').value.toString(), Image: snapshot.child('image').value.toString(), Interests: null, Password: null);
-
-  //  return snapshot.child('image').value.toString();
- //  return userDb!;
+    return new User(
+        Username: snapshot.child('username').value.toString(),
+        Email: snapshot.child('email').value.toString(),
+        Image: snapshot.child('image').value.toString(),
+        Interests: null,
+        Password: null);
   }
 
+  String GetInterestById(int id)
+  {
+    return Interests.list[id].name.toString();
+  }
 
-  int index = 0;
 
   // onItemSearch(String value) {
   //   setState(
@@ -159,7 +160,7 @@ class _MainViewState extends State<MainView> {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child: Text('interest'),
+                                              child: Text(GetInterestById( post.interestsId!)),
                                             ),
                                           ],
                                         ),
