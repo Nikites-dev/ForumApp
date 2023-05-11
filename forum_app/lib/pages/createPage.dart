@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -36,6 +38,11 @@ class Create extends State<CreatePage> {
   var xid = Xid();
  DatabaseReference? dbRef;
 
+  @override
+  void initState() {
+    super.initState();
+    dbRef = FirebaseDatabase.instance.ref().child('user');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +73,7 @@ class Create extends State<CreatePage> {
 
 
                   prefs = await SharedPreferences.getInstance(),
-                  username = prefs.getString('username'),
+                  username = prefs.getString('userId'),
                 newPost?.username = username.toString(),
                 newPost?.title = edTitlePost.text.toString(),
                 newPost?.text = edTextPost.text.toString(),
@@ -182,7 +189,6 @@ class Create extends State<CreatePage> {
       ),
     );
   }
-
 
  
  getImage() async {

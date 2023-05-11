@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -7,6 +8,9 @@ import 'package:forum_app/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/pages/postPage.dart';
 import 'package:infinite_listview/infinite_listview.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/user.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -19,7 +23,8 @@ class _MainViewState extends State<MainView> {
   // List<Post> posts = List.from(listPosts);
 
   List<Post> posts = [];
-
+  DatabaseReference? dbRef;
+  DatabaseReference? dbRefUser;
 
   Future<List<Post>> getListPosts() async {
     final snapshot = await FirebaseDatabase.instance.ref('post').get();
@@ -34,12 +39,26 @@ class _MainViewState extends State<MainView> {
   }
 
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance
-  //       .addPostFrameCallback((_) => getListPosts());
-  // }
+  @override
+  void initState() {
+    super.initState();
+    dbRefUser = FirebaseDatabase.instance.ref().child('user');
+  }
+
+  Future<User> GetUserFromDb(String userId) async {
+
+    DataSnapshot snapshot = await dbRefUser!.child(userId.toString()).get() ;
+
+    // String Username = snapshot.child('username').value.toString();
+    // userDb?.Email = snapshot.child('email').value.toString();
+    // userDb?.Image =  snapshot.child('image').value.toString();
+
+    return new User(Username: snapshot.child('username').value.toString(), Email: snapshot.child('email').value.toString(), Image: snapshot.child('image').value.toString(), Interests: null, Password: null);
+
+  //  return snapshot.child('image').value.toString();
+ //  return userDb!;
+  }
+
 
   int index = 0;
 
@@ -73,6 +92,9 @@ class _MainViewState extends State<MainView> {
                           child: ListView(
                             children: crntPosts!.map(
                                   (post) {
+                                    User? userPost;
+                                    String? img;
+                                    String? username;
                                 return Card(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
@@ -91,24 +113,48 @@ class _MainViewState extends State<MainView> {
                                           children: [
                                             Row(
                                               children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      8.0),
-                                                  child: CircleAvatar(
-                                                    backgroundImage: NetworkImage(
-                                                        'https://widget.teletype.app/popup/assets/images/bot-avatar.jpg'),
-                                                  ),
+                                                 FutureBuilder(
+
+                                                     future: GetUserFromDb(post.username.toString()),
+                                                  builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+                                                  Widget childUser;
+                                                  if (snapshot.connectionState == ConnectionState.done) {
+                                                   userPost = snapshot.data;
+                                                     img = userPost?.Image;
+                                                    username = userPost?.Username;
+                                                    childUser =  Row(children: [
+
+
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(
+                                                            8.0),
+                                                        child: CircleAvatar(
+                                                          backgroundImage: NetworkImage(
+                                                              img.toString()),
+                                                        ),
+                                                      ),
+
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(
+                                                            1.0),
+                                                        child: Text(username.toString()),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(
+                                                            1.0),
+                                                        child: Text('10 ч.'),
+                                                      ),
+
+
+
+                                                    ],);
+                                                    return childUser;
+                                                  }
+                                                  return Center(child: CircularProgressIndicator());
+                                                  }
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      1.0),
-                                                  child: Text(post.username!),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      1.0),
-                                                  child: Text('10 ч.'),
-                                                ),
+
+
                                               ],
                                             ),
                                             Padding(
@@ -224,7 +270,9 @@ class _MainViewState extends State<MainView> {
                     }),
               ),
         ));
+
   }
+
 }
 String SetText(String text) {
   if (text.length > 150) {
@@ -232,6 +280,9 @@ String SetText(String text) {
   }
   return text;
 }
+
+
+
 
 // Row(
 // children: <Widget>[
