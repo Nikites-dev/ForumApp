@@ -99,15 +99,20 @@ class _MainViewState extends State<MainView> {
                                                         'https://widget.teletype.app/popup/assets/images/bot-avatar.jpg'),
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      1.0),
-                                                  child: Text(post.username!),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      1.0),
-                                                  child: Text('10 ч.'),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(
+                                                          1.0),
+                                                      child: Text(post.username!),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(
+                                                          1.0),
+                                                      child: Text('10 ч.'),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -123,9 +128,9 @@ class _MainViewState extends State<MainView> {
                                           children: [
                                             Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child: new Text(
+                                              child: Text(
                                                 SetText(post.title!),
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.w400,
                                                 ),
