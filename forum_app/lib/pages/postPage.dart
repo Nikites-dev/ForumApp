@@ -1,14 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:comment_box/comment/comment.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/models/Interests.dart';
+import 'package:forum_app/models/comment.dart';
 import 'package:forum_app/models/post.dart';
-import 'package:forum_app/models/user.dart';
 import 'package:intl/intl.dart';
-
+import 'package:provider/provider.dart';
+import '../services/auth/model.dart';
 import '../widgets/inputWidget.dart';
 
 class PostPage extends StatefulWidget {
@@ -25,12 +23,48 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   final TextEditingController commentController = TextEditingController();
 
+  Future<void> likePost() async
+  {
+    widget.post.likes ??= [];
+
+    var userId = Provider.of<UserModel?>(context, listen: false)!.id;
+    if (widget.post.likes!.contains(userId))
+    {
+      widget.post.likes!.remove(userId);
+    }
+    else{
+      widget.post.likes!.add(userId);
+    }
+
+    var dbRef = FirebaseDatabase.instance.ref().child('post');
+    dbRef.child(widget.post.id!).child('likes').set(widget.post.likes);
+  }
+
   Future<void> loadUserInfo() async
   {
     var dbRef = FirebaseDatabase.instance.ref().child('user');
     DataSnapshot snapshot = await dbRef.child(widget.post.username!).get();
     widget.userImg = snapshot.child('image').value.toString();
     widget.userName = snapshot.child('username').value.toString();
+  }
+
+  Future<void> sendComment() async
+  {
+    widget.post.comments ??= [];
+
+    var dbRef = FirebaseDatabase.instance.ref().child('user');
+    var userId = Provider.of<UserModel?>(context, listen: false)!.id;
+    DataSnapshot snapshot = await dbRef.child(userId).get();
+
+    widget.post.comments!.add(Comment(snapshot.child('username').value.toString(), commentController.text));
+    commentController.clear();
+
+    dbRef = FirebaseDatabase.instance.ref().child('post');
+
+    var newKey = dbRef.child(widget.post.id!).child('comments').push();
+    var keyValue = newKey.key.toString();
+    await dbRef.child(widget.post.id!).child('comments').child(keyValue).child('username').set(widget.post.comments!.last.Username);
+    await dbRef.child(widget.post.id!).child('comments').child(keyValue).child('text').set(widget.post.comments!.last.Text);
   }
 
   Widget commentChild()
@@ -79,7 +113,7 @@ class _PostPageState extends State<PostPage> {
                           builder: (context, snapshot)
                           {
                             return Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: CircleAvatar(
                                 backgroundImage: NetworkImage(
                                     widget.userImg!),
@@ -161,7 +195,7 @@ class _PostPageState extends State<PostPage> {
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  loadUserInfo();
+                                  likePost();
                                 });
                               },
                               style: ButtonStyle(
@@ -171,11 +205,17 @@ class _PostPageState extends State<PostPage> {
                                     const MaterialStatePropertyAll(Colors.white),
                               ),
                               child: Row(children: [
-                                const Icon(Icons.arrow_upward_rounded,
-                                    color: Colors.grey),
+                                Icon(Icons.arrow_upward_rounded,
+                                    color: widget.post.likes == null 
+                                    ? Colors.grey 
+                                    : (widget.post.likes!.contains(Provider.of<UserModel?>(context, listen: false)!.id) 
+                                    ? Colors.red 
+                                    : Colors.grey)),
                                 const SizedBox(width: 2.0),
-                                widget.post.likes == null ? const Text("0") : Text(widget.post.likes!.length.toString(),
-                                    style: const TextStyle(color: Colors.grey)),
+                                Text(widget.post.likes == null ? "0" : widget.post.likes!.length.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.grey),
+                                ),
                               ]),
                             ),
                             ElevatedButton(
@@ -220,13 +260,29 @@ class _PostPageState extends State<PostPage> {
       bottomNavigationBar: Padding(
         padding: MediaQuery.of(context).viewInsets,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: InputWidget(
-            commentController,
-            labelText: "Введите сообщение",
-            color: Colors.cyan,
-            icon: const Icon(Icons.message, color: Colors.cyan),
-          ),
+          padding: const EdgeInsets.all(5.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              InputWidget(
+              commentController,
+              labelText: "Введите сообщение",
+              color: Colors.cyan,
+              icon: const Icon(Icons.message, color: Colors.cyan),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(0.0),
+              child: IconButton(
+                icon: const Icon(Icons.send),
+                color: Colors.cyan,
+                onPressed: () async {
+                  setState(() {
+                    sendComment();
+                  });
+                },),
+            )
+          ]),
         ),
       ),
     );

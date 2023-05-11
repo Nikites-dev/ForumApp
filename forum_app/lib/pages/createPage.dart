@@ -188,7 +188,10 @@ class Create extends State<CreatePage> {
  getImage() async {
     var img = await image.pickImage(source: ImageSource.gallery);
       setState(() {
-      file = File(img!.path);
+        if (img != null)
+        {
+          file = File(img.path);
+        }
     });
 
     isSelectUserImage = true;

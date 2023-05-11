@@ -24,12 +24,16 @@ class _MainViewState extends State<MainView> {
   Future<List<Post>> getListPosts() async {
     final snapshot = await FirebaseDatabase.instance.ref('post').get();
 
-    final map = snapshot.value as Map<dynamic, dynamic>;
+    if (snapshot.value != null)
+    {
+      final map = snapshot.value as Map<dynamic, dynamic>;
 
-    map.forEach((key, value) {
-      final user = Post.fromMap(value);
-      posts.add(user);
-    });
+      map.forEach((key, value) {
+        final user = Post.fromMap(value);
+        posts.add(user);
+      });
+    }
+    
     return posts;
   }
 

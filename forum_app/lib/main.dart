@@ -10,7 +10,6 @@ import 'package:forum_app/services/auth/service.dart';
 import 'package:forum_app/services/realtimeDb/insert.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
