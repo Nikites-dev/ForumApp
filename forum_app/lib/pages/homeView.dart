@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:forum_app/pages/postPage.dart';
 import 'package:infinite_listview/infinite_listview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:intl/intl.dart';
 import '../models/user.dart';
 
 class MainView extends StatefulWidget {
@@ -27,6 +28,8 @@ class _MainViewState extends State<MainView> {
   DatabaseReference? dbRef;
   DatabaseReference? dbRefUser;
   int index = 0;
+
+  DateFormat formatter = DateFormat('dd.MM HH:MM');
 
   Future<List<Post>> getListPosts() async {
     final snapshot = await FirebaseDatabase.instance.ref('post').get();
@@ -96,6 +99,7 @@ class _MainViewState extends State<MainView> {
                                     User? userPost;
                                     String? img;
                                     String? username;
+
                                 return Card(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
@@ -143,7 +147,7 @@ class _MainViewState extends State<MainView> {
                                                       Padding(
                                                         padding: const EdgeInsets.all(
                                                             1.0),
-                                                        child: Text('10 ч.'),
+                                                        child: Text(formatter.format(post.createPost!), style: TextStyle(fontSize: 10)),
                                                       ),
 
 
@@ -193,7 +197,7 @@ class _MainViewState extends State<MainView> {
                                                 new CircularProgressIndicator(),
                                                 errorWidget: (context, url,
                                                     error) =>
-                                                new Icon(Icons.error),
+                                                Padding(padding: EdgeInsets.all(0)),
                                               ),
                                             ),
                                             Padding(
@@ -204,11 +208,11 @@ class _MainViewState extends State<MainView> {
                                                     children: [
                                                       ElevatedButton(
                                                         child: Row(children: [
-                                                          Icon(Icons
-                                                              .arrow_upward_rounded,
+                                                          Icon(CupertinoIcons.suit_heart
+                                                              ,
                                                               color: Colors.grey),
                                                           SizedBox(width: 2.0),
-                                                          Text("1412",
+                                                          Text(post.likes == null? "0": post.likes!.length.toString(),
                                                               style: TextStyle(
                                                                   color: Colors
                                                                       .grey)),
@@ -231,11 +235,11 @@ class _MainViewState extends State<MainView> {
                                                       child: Row(
                                                         children: [
                                                           Icon(Icons
-                                                              .message_outlined,
+                                                              .comment_rounded,
                                                               color: Colors.grey),
                                                           SizedBox(width: 5.0),
                                                           Text(
-                                                            "8",
+                                                              post.comments == null? "0": post.likes!.length.toString(),
                                                             style: TextStyle(
                                                                 color: Colors.grey),
                                                           ),
