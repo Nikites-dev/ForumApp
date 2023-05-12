@@ -5,7 +5,7 @@ import 'package:forum_app/services/auth/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/inputWidget.dart';
-import 'createPage.dart';
+import 'create_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           // Navigator.of(context).push(MaterialPageRoute(
           //     builder: (context) => Navigator.(context) => CreatePage()));
-          Navigator.popAndPushNamed(context, '/create');
+          Navigator.pushNamed(context, '/create');
         },
         backgroundColor: Colors.cyan.shade700,
         child: const Icon(

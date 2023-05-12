@@ -1,13 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/pages/auth_page.dart';
-import 'package:forum_app/pages/createPage.dart';
-import 'package:forum_app/pages/interestsPage.dart';
+import 'package:forum_app/pages/create_page.dart';
+import 'package:forum_app/pages/interests_page.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
 import 'package:forum_app/pages/reg_page.dart';
 import 'package:forum_app/services/auth/landing.dart';
 import 'package:forum_app/services/auth/service.dart';
-import 'package:forum_app/services/realtimeDb/insert.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -27,11 +26,10 @@ class AppThemeMaterial extends StatelessWidget {
       initialData: null,
       child: MaterialApp(
         routes: {
-          '/': (context) => LandingPage(),
+          '/': (context) => const LandingPage(),
           '/reg': (context) => RegPage(),
           '/auth': (context) => const AuthPage(),
           '/home': (context) => const HomePage(),
-          '/insert': (context) => ccreate(),
           '/interests': (context) => InterestsPage(post: null,),
           '/create': (context) => CreatePage(),
         },

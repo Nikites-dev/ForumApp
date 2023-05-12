@@ -83,17 +83,29 @@ class AuthServices {
     var userId = Provider.of<UserModel?>(context, listen: false)!.id;
     var dbRef = FirebaseDatabase.instance.ref().child('user');
 
-    await dbRef!
+    await dbRef
         .child(userId)
         .child("username")
         .set(username);
-    await dbRef!
+    await dbRef
         .child(userId)
         .child("email")
         .set(email);
-    await dbRef!
+    await dbRef
         .child(userId)
         .child("password")
         .set(password);
+  }
+
+  Future updateUserInterests(BuildContext context, List<String> selectedInterests) async
+  {
+    var userId = Provider.of<UserModel?>(context, listen: false)!.id;
+    var dbRef = FirebaseDatabase.instance.ref().child('user');
+
+    await dbRef
+        .child('user')
+        .child(userId.toString())
+        .child("interests")
+        .set(selectedInterests);
   }
 }
