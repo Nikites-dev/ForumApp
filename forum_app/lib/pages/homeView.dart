@@ -96,7 +96,7 @@ class _MainViewState extends State<MainView> {
                       if (snapshot.connectionState == ConnectionState.done) {
                          crntPosts = snapshot.data;
                         // posts = List.from(listPosts);
-                        child = Center(
+                        child = crntPosts != null? Center(
                           child: ListView(
                             children: crntPosts!.map(
                                   (post) {
@@ -270,7 +270,7 @@ class _MainViewState extends State<MainView> {
                               },
                             ).toList(),
                           ),
-                        );
+                        ): Text('#crntPosts has null');
                         return child;
                       } else {
                         return Center(child: CircularProgressIndicator());
