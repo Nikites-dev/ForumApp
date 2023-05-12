@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:forum_app/models/Interests.dart';
+import 'package:forum_app/models/interests.dart';
 import 'package:forum_app/models/comment.dart';
 import 'package:forum_app/models/post.dart';
 import 'package:intl/intl.dart';
@@ -21,13 +21,16 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final TextEditingController commentController = TextEditingController();
+  final ScrollController _scrollController = ScrollController(); 
+  final TextEditingController _commentController = TextEditingController();
+  final DateFormat _dateFormatter = DateFormat('dd.MM HH:MM');
 
   Future<void> likePost() async
   {
     widget.post.likes ??= [];
 
     var userId = Provider.of<UserModel?>(context, listen: false)!.id;
+
     if (widget.post.likes!.contains(userId))
     {
       widget.post.likes!.remove(userId);
@@ -37,7 +40,15 @@ class _PostPageState extends State<PostPage> {
     }
 
     var dbRef = FirebaseDatabase.instance.ref().child('post');
-    dbRef.child(widget.post.id!).child('likes').set(widget.post.likes);
+    
+    if (widget.post.likes!.isEmpty)
+    {
+      dbRef.child(widget.post.id!).child('likes').set("null");
+    }
+    else
+    {
+      dbRef.child(widget.post.id!).child('likes').set(widget.post.likes);
+    }
   }
 
   Future<void> loadUserInfo() async
@@ -56,15 +67,23 @@ class _PostPageState extends State<PostPage> {
     var userId = Provider.of<UserModel?>(context, listen: false)!.id;
     DataSnapshot snapshot = await dbRef.child(userId).get();
 
-    widget.post.comments!.add(Comment(snapshot.child('username').value.toString(), commentController.text));
-    commentController.clear();
+    widget.post.comments!.add(Comment(snapshot.child('username').value.toString(), _commentController.text));
+    _commentController.clear();
 
     dbRef = FirebaseDatabase.instance.ref().child('post');
 
-    var newKey = dbRef.child(widget.post.id!).child('comments').push();
-    var keyValue = newKey.key.toString();
-    await dbRef.child(widget.post.id!).child('comments').child(keyValue).child('username').set(widget.post.comments!.last.Username);
-    await dbRef.child(widget.post.id!).child('comments').child(keyValue).child('text').set(widget.post.comments!.last.Text);
+    setState(() {
+      if(widget.post.comments!.isEmpty)
+      {
+        dbRef.child(widget.post.id!).child('comments').set("null");
+      }
+      else{
+        var newKey = dbRef.child(widget.post.id!).child('comments').push();
+        var keyValue = newKey.key.toString();
+        dbRef.child(widget.post.id!).child('comments').child(keyValue).child('username').set(widget.post.comments!.last.username);
+        dbRef.child(widget.post.id!).child('comments').child(keyValue).child('text').set(widget.post.comments!.last.text);
+      }
+    });
   }
 
   Widget commentChild()
@@ -79,8 +98,8 @@ class _PostPageState extends State<PostPage> {
             return Card(    
               child: ListTile(
                 leading: const Icon(Icons.message_outlined),
-                title: Text(comment.Username!),
-                subtitle: Text(comment.Text!),
+                title: Text(comment.username!),
+                subtitle: Text(comment.text!),
               ),
             );
           }).toList()
@@ -99,6 +118,7 @@ class _PostPageState extends State<PostPage> {
             borderRadius: BorderRadius.circular(15),
           ),
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -138,7 +158,7 @@ class _PostPageState extends State<PostPage> {
                               padding: const EdgeInsets.all(1.0),
                               child: widget.post.createPost == null 
                               ? const Text("не указано") 
-                              : Text(DateFormat("yyyy-MM-dd").format(widget.post.createPost!)),
+                              : Text(_dateFormatter.format(widget.post.createPost!)),
                             ),
                           ],
                         ),
@@ -266,7 +286,7 @@ class _PostPageState extends State<PostPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               InputWidget(
-              commentController,
+              _commentController,
               labelText: "Введите сообщение",
               color: Colors.cyan,
               icon: const Icon(Icons.message, color: Colors.cyan),
@@ -276,10 +296,9 @@ class _PostPageState extends State<PostPage> {
               child: IconButton(
                 icon: const Icon(Icons.send),
                 color: Colors.cyan,
-                onPressed: () async {
-                  setState(() {
-                    sendComment();
-                  });
+                onPressed: () {
+                  sendComment();
+                  _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
                 },),
             )
           ]),

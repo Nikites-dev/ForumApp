@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 224, 215, 215),
+        backgroundColor: Colors.cyan,
         actions: [
           Padding(
             padding: const EdgeInsets.fromLTRB(8.0, 8.0, 28.0, 8.0),
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
               child: InputWidget(
                 _searchController,
                 color: Colors.black,
-                icon: Icon(Icons.search, color: Colors.cyan),
+                icon: Icon(Icons.search, color: Colors.black),
                 labelText: 'Search',
               ),
             ),
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           //     builder: (context) => Navigator.(context) => CreatePage()));
           Navigator.popAndPushNamed(context, '/create');
         },
-        backgroundColor: Color.fromARGB(255, 179, 172, 172),
+        backgroundColor: Colors.cyan.shade700,
         child: const Icon(
           Icons.add,
         ),
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
-        backgroundColor: Color.fromARGB(255, 224, 215, 215),
+        backgroundColor: Colors.cyan,
         selectedItemColor: Colors.white,
         items: const [
           BottomNavigationBarItem(

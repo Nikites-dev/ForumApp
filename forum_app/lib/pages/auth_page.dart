@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:forum_app/services/auth/model.dart';
 import 'package:forum_app/widgets/inputWidget.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -18,37 +15,21 @@ class _AuthPageState extends State<AuthPage> {
   final AuthServices _service = AuthServices();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  DatabaseReference? dbRef;
-  String? userId;
 
-@override
-  void initState() {
-    super.initState();
-    dbRef = FirebaseDatabase.instance.ref().child('user');
+  void showSnackBar(String value) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(value),
+        backgroundColor: Colors.primaries.first,));
   }
 
-  Future SignIn() async {
-    var user =
-        await _service.signIn(_emailController.text, _passwordController.text);
-    userId = user!.id.toString();
-    if(user != null) {
-    GetDataFromDb_data();
+  Future signIn() async {
+    var authRes =
+      await _service.signIn(_emailController.text, _passwordController.text);
+    
+    if(authRes != null) {
+      showSnackBar(authRes);
     }
   }
-
-Future GetDataFromDb_data() async {
-  
-  
-
-      DataSnapshot snapshot = await dbRef!.child(userId!).get();
-      String? username = snapshot.child('username').value.toString();
-  
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('userId', userId!);
-      prefs.setString('username', username);
-  }
-
-
 
   @override
   void dispose() {
@@ -93,7 +74,7 @@ Future GetDataFromDb_data() async {
                 child: InputWidget(
                   _emailController,
                   color: Colors.cyan,
-                  icon: Icon(Icons.email, color: Colors.cyan),
+                  icon: const Icon(Icons.email, color: Colors.cyan),
                   labelText: 'Email',
                 ),
               ),
@@ -106,8 +87,8 @@ Future GetDataFromDb_data() async {
                 child: InputWidget(
                   _passwordController,
                   color: Colors.cyan,
-                  icon: Icon(Icons.lock, color: Colors.cyan),
-                  labelText: 'Password',
+                  icon: const Icon(Icons.lock, color: Colors.cyan),
+                  labelText: 'Пароль',
                 ),
               ),
               const SizedBox(
@@ -120,16 +101,9 @@ Future GetDataFromDb_data() async {
                   onPressed: () {
                     if (_emailController.text.isEmpty ||
                         _passwordController.text.isEmpty) {
-                      final snackBar = SnackBar(
-                        content: const Text('Fill in all the fields!'),
-                        backgroundColor: Colors.primaries.first,
-                      );
-
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      showSnackBar('Заполните все поля!');
                     } else {
-                   
-                      SignIn();
-                       Navigator.pushNamed(context, '/');
+                      signIn();
                     }
                   },
                   style: ButtonStyle(
@@ -140,7 +114,7 @@ Future GetDataFromDb_data() async {
                     ),
                   ),
                   child: const Text(
-                    'Sign in',
+                    'Войти',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -148,11 +122,11 @@ Future GetDataFromDb_data() async {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('New to Forum?'),
+                  const Text('Нет аккаунта?'),
                   TextButton(
                     onPressed: () => Navigator.popAndPushNamed(context, "/reg"),
                     child: const Text(
-                      'Create an account.',
+                      'Создать аккаунт',
                       style: TextStyle(
                         color: Colors.cyan,
                       ),

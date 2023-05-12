@@ -8,11 +8,13 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:xid/xid.dart';
 import '../models/post.dart';
 import '../models/user.dart';
+import '../services/auth/model.dart';
 import 'interestsPage.dart';
 
 class CreatePage extends StatefulWidget {
@@ -72,8 +74,8 @@ class Create extends State<CreatePage> {
               {
 
 
-                  prefs = await SharedPreferences.getInstance(),
-                  username = prefs.getString('userId'),
+                  
+                  username = Provider.of<UserModel?>(context, listen: false)!.id,
                 newPost?.username = username.toString(),
                 newPost?.title = edTitlePost.text.toString(),
                 newPost?.text = edTextPost.text.toString(),

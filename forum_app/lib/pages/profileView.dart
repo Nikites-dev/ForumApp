@@ -6,10 +6,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 
 import '../models/user.dart';
+import '../services/auth/model.dart';
 
 class ProfileView extends StatefulWidget {
   @override
@@ -40,8 +42,7 @@ class Profile extends State<ProfileView> {
   }
 
   Future<String> GetDataFromDb_data() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getString('userId');
+    userId = Provider.of<UserModel?>(context, listen: false)!.id;
 
     DataSnapshot snapshot = await dbRef!.child(userId.toString()).get();
     username.text = snapshot.child('username').value.toString();
@@ -63,9 +64,8 @@ class Profile extends State<ProfileView> {
     prefs.setString('userId', userId.toString());
   }
 
-  getLocalData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getString('userId');
+  getLocalData() {
+    userId = Provider.of<UserModel?>(context, listen: false)!.id;
   }
 
   @override

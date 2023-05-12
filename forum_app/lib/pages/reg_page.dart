@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:forum_app/services/auth/model.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:forum_app/widgets/inputWidget.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../models/user.dart';
 
 class RegPage extends StatefulWidget {
   RegPage({super.key});
@@ -20,42 +14,29 @@ class _RegPageState extends State<RegPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _passwordConfirmController =
-      TextEditingController();
-
-  DatabaseReference? dbRef;
-
-  @override
-  void initState() {
-    super.initState();
-    dbRef = FirebaseDatabase.instance.ref().child('user');
-  }
+  final TextEditingController _passwordConfirmController = TextEditingController();
 
   Future<bool> signUp() async {
-    var user = await _service.register(
+    var regRes = await _service.register(
         _emailController.text, _passwordController.text);
 
-    if (user != null) {
-      saveLocalData(user);
-      UploadUserToDb(user);
-      return true;
+    if (regRes != null)
+    {
+      showSnackBar(regRes);
+      return false;
     }
-    return false;
+
+    if (context.mounted)
+    {
+      _service.saveUserToDb(context, _usernameController.text, _emailController.text, _passwordController.text);
+    }
+    return true;
   }
 
-  UploadUserToDb(UserModel user) async {
-    await dbRef!
-        .child(user.id)
-        .child("username")
-        .set(_usernameController.text.toString());
-    await dbRef!
-        .child(user.id)
-        .child("email")
-        .set(_emailController.text.toString());
-    await dbRef!
-        .child(user.id)
-        .child("password")
-        .set(_passwordController.text.toString());
+  void showSnackBar(String value) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(value),
+        backgroundColor: Colors.primaries.first,));
   }
 
   @override
@@ -63,12 +44,6 @@ class _RegPageState extends State<RegPage> {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-  }
-
-  saveLocalData(UserModel user) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('userId', user.id);
-    prefs.setString('username', _usernameController.text.toString());
   }
 
   @override
@@ -107,8 +82,8 @@ class _RegPageState extends State<RegPage> {
               child: InputWidget(
                 _usernameController,
                 color: Colors.cyan,
-                icon: Icon(Icons.account_circle, color: Colors.cyan),
-                labelText: 'Username',
+                icon: const Icon(Icons.account_circle, color: Colors.cyan),
+                labelText: 'Имя',
               ),
             ),
             const SizedBox(
@@ -120,7 +95,7 @@ class _RegPageState extends State<RegPage> {
               child: InputWidget(
                 _emailController,
                 color: Colors.cyan,
-                icon: Icon(Icons.email, color: Colors.cyan),
+                icon: const Icon(Icons.email, color: Colors.cyan),
                 labelText: 'Email',
               ),
             ),
@@ -133,8 +108,8 @@ class _RegPageState extends State<RegPage> {
               child: InputWidget(
                 _passwordController,
                 color: Colors.cyan,
-                icon: Icon(Icons.lock, color: Colors.cyan),
-                labelText: 'Password',
+                icon: const Icon(Icons.lock, color: Colors.cyan),
+                labelText: 'Пароль',
               ),
             ),
             const SizedBox(
@@ -146,8 +121,8 @@ class _RegPageState extends State<RegPage> {
               child: InputWidget(
                 _passwordConfirmController,
                 color: Colors.cyan,
-                icon: Icon(Icons.lock, color: Colors.cyan),
-                labelText: 'Confirm Password',
+                icon: const Icon(Icons.lock, color: Colors.cyan),
+                labelText: 'Повтор пароля',
               ),
             ),
             const SizedBox(
@@ -161,36 +136,15 @@ class _RegPageState extends State<RegPage> {
                   if (_passwordController.text.isEmpty ||
                       _emailController.text.isEmpty ||
                       _usernameController.text.isEmpty) {
-                    final snackBar = SnackBar(
-                      content: const Text('Fill in all the fields!'),
-                      backgroundColor: Colors.primaries.first,
-                    );
-
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    showSnackBar("Заполните все поля!");
                   } else if (_passwordController.text.length < 6) {
-                    final snackBar = SnackBar(
-                      content: const Text('Password minimum 6 symbols!'),
-                      backgroundColor: Colors.primaries.first,
-                    );
-
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    showSnackBar('Пароль должен содержать не менее 6 символов!');
                   } else if (_passwordController.text !=
                       _passwordConfirmController.text) {
-                    final snackBar = SnackBar(
-                      content: const Text('Passwords don\'t match'),
-                      backgroundColor: Colors.primaries.first,
-                    );
-
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    showSnackBar('Пароли не совпадают!');
                   } else {
                     if (await signUp()) {
                       Navigator.pushNamed(context, '/interests');
-                    } else {
-                      var snackBar = SnackBar(
-                        content: const Text('Something wrong! :('),
-                        backgroundColor: Colors.primaries.first,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }
                   }
                 },
@@ -202,7 +156,7 @@ class _RegPageState extends State<RegPage> {
                   ),
                 ),
                 child: const Text(
-                  'Sign up',
+                  'Зарегистрироваться',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -213,11 +167,11 @@ class _RegPageState extends State<RegPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Already have an account?'),
+                const Text('Уже есть аккаунт?'),
                 TextButton(
                   onPressed: () => Navigator.popAndPushNamed(context, "/auth"),
                   child: const Text(
-                    'Sign in',
+                    'Авторизация',
                     style: TextStyle(
                       color: Colors.cyan,
                     ),

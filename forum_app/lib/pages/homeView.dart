@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:forum_app/models/Interests.dart';
+import 'package:forum_app/models/interests.dart';
 import 'package:forum_app/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/pages/postPage.dart';
@@ -57,11 +57,11 @@ class _MainViewState extends State<MainView> {
   Future<User> GetUserFromDb(String userId) async {
     DataSnapshot snapshot = await dbRefUser!.child(userId.toString()).get() ;
     return new User(
-        Username: snapshot.child('username').value.toString(),
-        Email: snapshot.child('email').value.toString(),
-        Image: snapshot.child('image').value.toString(),
-        Interests: null,
-        Password: null);
+        username: snapshot.child('username').value.toString(),
+        email: snapshot.child('email').value.toString(),
+        image: snapshot.child('image').value.toString(),
+        interests: null,
+        password: null);
   }
 
   String GetInterestById(int id)
@@ -128,8 +128,8 @@ class _MainViewState extends State<MainView> {
                                                   Widget childUser;
                                                   if (snapshot.connectionState == ConnectionState.done) {
                                                    userPost = snapshot.data;
-                                                     img = userPost?.Image;
-                                                    username = userPost?.Username;
+                                                     img = userPost?.image;
+                                                    username = userPost?.username;
                                                     childUser =  Row(children: [
 
 
@@ -242,7 +242,7 @@ class _MainViewState extends State<MainView> {
                                                               color: Colors.grey),
                                                           SizedBox(width: 5.0),
                                                           Text(
-                                                              post.comments == null? "0": post.likes!.length.toString(),
+                                                              post.comments == null? "0": post.comments!.length.toString(),
                                                             style: TextStyle(
                                                                 color: Colors.grey),
                                                           ),

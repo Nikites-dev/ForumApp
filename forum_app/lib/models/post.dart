@@ -12,15 +12,16 @@ class Post {
   List<String>? likes;
 
   Post(
-      {this.username,
-      this.title,
-      this.text,
-      this.imgUrl,
-      this.interestsId,
-      this.createPost,
-      this.comments,
-      this.likes,
-      this.id});
+    {this.username,
+    this.title,
+    this.text,
+    this.imgUrl,
+    this.interestsId,
+    this.createPost,
+    this.comments,
+    this.likes,
+    this.id}
+  );
 
   factory Post.fromMap(Map<dynamic, dynamic> map) {
     List<Comment> comments = [];
@@ -54,6 +55,3 @@ class Post {
     );
   }
 }
-
-
-

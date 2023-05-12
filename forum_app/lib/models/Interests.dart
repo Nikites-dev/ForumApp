@@ -1,5 +1,3 @@
-import 'package:enefty_icons/enefty_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/models/interest.dart';
 

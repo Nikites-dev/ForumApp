@@ -1,8 +1,8 @@
 class Comment {
-  String? Username;
-  String? Text;
+  String? username;
+  String? text;
 
-  Comment(this.Username, this.Text);
+  Comment(this.username, this.text);
 
   factory Comment.fromMap(Map<dynamic, dynamic> map) {
     return Comment(
