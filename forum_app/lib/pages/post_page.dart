@@ -1,9 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/models/interests.dart';
-import 'package:forum_app/models/comment.dart';
 import 'package:forum_app/models/post.dart';
+import 'package:forum_app/services/post_service.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../services/auth/model.dart';
@@ -21,69 +20,16 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+  final PostService _postService = PostService();
   final ScrollController _scrollController = ScrollController(); 
   final TextEditingController _commentController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('dd.MM HH:MM');
 
-  Future<void> likePost() async
-  {
-    widget.post.likes ??= [];
-
-    var userId = Provider.of<UserModel?>(context, listen: false)!.id;
-
-    if (widget.post.likes!.contains(userId))
-    {
-      widget.post.likes!.remove(userId);
-    }
-    else{
-      widget.post.likes!.add(userId);
-    }
-
-    var dbRef = FirebaseDatabase.instance.ref().child('post');
-    
-    if (widget.post.likes!.isEmpty)
-    {
-      dbRef.child(widget.post.id!).child('likes').set("null");
-    }
-    else
-    {
-      dbRef.child(widget.post.id!).child('likes').set(widget.post.likes);
-    }
-  }
-
   Future<void> loadUserInfo() async
   {
-    var dbRef = FirebaseDatabase.instance.ref().child('user');
-    DataSnapshot snapshot = await dbRef.child(widget.post.username!).get();
-    widget.userImg = snapshot.child('image').value.toString();
-    widget.userName = snapshot.child('username').value.toString();
-  }
-
-  Future<void> sendComment() async
-  {
-    widget.post.comments ??= [];
-
-    var dbRef = FirebaseDatabase.instance.ref().child('user');
-    var userId = Provider.of<UserModel?>(context, listen: false)!.id;
-    DataSnapshot snapshot = await dbRef.child(userId).get();
-
-    widget.post.comments!.add(Comment(snapshot.child('username').value.toString(), _commentController.text));
-    _commentController.clear();
-
-    dbRef = FirebaseDatabase.instance.ref().child('post');
-
-    setState(() {
-      if(widget.post.comments!.isEmpty)
-      {
-        dbRef.child(widget.post.id!).child('comments').set("null");
-      }
-      else{
-        var newKey = dbRef.child(widget.post.id!).child('comments').push();
-        var keyValue = newKey.key.toString();
-        dbRef.child(widget.post.id!).child('comments').child(keyValue).child('username').set(widget.post.comments!.last.username);
-        dbRef.child(widget.post.id!).child('comments').child(keyValue).child('text').set(widget.post.comments!.last.text);
-      }
-    });
+    var info = await _postService.getUserInfo(widget.post.username!);
+    widget.userImg = info.userImg;
+    widget.userName = info.username;
   }
 
   Widget commentChild()
@@ -215,7 +161,7 @@ class _PostPageState extends State<PostPage> {
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  likePost();
+                                  _postService.likePost(context, widget.post);
                                 });
                               },
                               style: ButtonStyle(
@@ -297,8 +243,11 @@ class _PostPageState extends State<PostPage> {
                 icon: const Icon(Icons.send),
                 color: Colors.cyan,
                 onPressed: () {
-                  sendComment();
-                  _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                  setState(() {
+                    _postService.sendComment(context, widget.post, _commentController.text);
+                    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                    _commentController.clear();
+                  });
                 },),
             )
           ]),

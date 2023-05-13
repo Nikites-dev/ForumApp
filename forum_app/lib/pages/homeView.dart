@@ -8,7 +8,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/models/interests.dart';
 import 'package:forum_app/models/post.dart';
 import 'package:flutter/material.dart';
-import 'package:forum_app/pages/postPage.dart';
+import 'package:forum_app/pages/post_page.dart';
 import 'package:infinite_listview/infinite_listview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';

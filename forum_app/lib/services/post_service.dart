@@ -1,10 +1,13 @@
 import 'dart:io';
 
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:forum_app/services/image_service.dart';
+import 'package:forum_app/services/image_service.dart'; 
+import 'package:forum_app/models/user_info.dart';
 import 'package:provider/provider.dart';
 
+import '../models/comment.dart';
 import '../models/post.dart';
 import 'auth/model.dart';
 
@@ -47,5 +50,65 @@ class PostService
       dbRef.child(keyValue).child('createPost').set(post.createPost.toString());
       dbRef.child(keyValue).child('comments').set(post.comments.toString());
       dbRef.child(keyValue).child('likes').set(post.likes.toString());
+  }
+
+  Future<UserInfo> getUserInfo(String userId) async
+  {
+    var dbRef = FirebaseDatabase.instance.ref().child('user');
+    DataSnapshot snapshot = await dbRef.child(userId).get();
+    var userImg = snapshot.child('image').value.toString();
+    var userName = snapshot.child('username').value.toString();
+    return UserInfo(userName, userImg);
+  }
+
+  Future<void> likePost(BuildContext context, Post post) async
+  {
+    post.likes ??= [];
+
+    var userId = Provider.of<UserModel?>(context, listen: false)!.id;
+
+    if (post.likes!.contains(userId))
+    {
+      post.likes!.remove(userId);
+    }
+    else{
+      post.likes!.add(userId);
+    }
+
+    var dbRef = FirebaseDatabase.instance.ref().child('post');
+    
+    if (post.likes!.isEmpty)
+    {
+      dbRef.child(post.id!).child('likes').set("null");
+    }
+    else
+    {
+      dbRef.child(post.id!).child('likes').set(post.likes);
+    }
+  }
+
+  Future<void> sendComment(BuildContext context, Post post, String text) async
+  {
+    post.comments ??= [];
+
+    var dbRef = FirebaseDatabase.instance.ref().child('user');
+    var userId = Provider.of<UserModel?>(context, listen: false)!.id;
+    DataSnapshot snapshot = await dbRef.child(userId).get();
+    
+    post.comments!.add(Comment(snapshot.child('username').value.toString(), text));
+
+
+    dbRef = FirebaseDatabase.instance.ref().child('post');
+
+    if(post.comments!.isEmpty)
+    {
+      dbRef.child(post.id!).child('comments').set("null");
+    }
+    else{
+      var newKey = dbRef.child(post.id!).child('comments').push();
+      var keyValue = newKey.key.toString();
+      dbRef.child(post.id!).child('comments').child(keyValue).child('username').set(post.comments!.last.username);
+      dbRef.child(post.id!).child('comments').child(keyValue).child('text').set(post.comments!.last.text);
+    }
   }
 }
