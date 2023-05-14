@@ -1,13 +1,7 @@
 class Comment {
   String? username;
   String? text;
+  DateTime? createdDate;
 
-  Comment(this.username, this.text);
-
-  factory Comment.fromMap(Map<dynamic, dynamic> map) {
-    return Comment(
-      map['username'] ?? '',
-      map['text'] ?? ''
-    );
-  }
+  Comment(this.username, this.text, this.createdDate);
 }

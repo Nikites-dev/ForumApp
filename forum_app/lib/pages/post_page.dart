@@ -4,6 +4,7 @@ import 'package:forum_app/models/interests.dart';
 import 'package:forum_app/models/post.dart';
 import 'package:forum_app/services/post_service.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import '../services/auth/model.dart';
 import '../widgets/inputWidget.dart';
@@ -43,8 +44,57 @@ class _PostPageState extends State<PostPage> {
           (comment) {
             return Card(    
               child: ListTile(
-                leading: const Icon(Icons.message_outlined),
-                title: Text(comment.username!),
+                leading: FutureBuilder(
+                  future: _postService.getUserInfo(comment.username!),
+                  builder: ((context, snapshot) 
+                  {
+                    if (snapshot.connectionState == ConnectionState.none || 
+                        snapshot.connectionState == ConnectionState.waiting)
+                    {
+                      return LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 30);
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.done)
+                    {
+                      return CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            snapshot.data!.userImg),
+                      );
+                    }
+
+                    return const Text('');
+                  }) 
+                ),
+                title: FutureBuilder(
+                  future: _postService.getUserInfo(comment.username!),
+                  builder: ((context, snapshot) 
+                  {
+                    if (snapshot.connectionState == ConnectionState.none || 
+                        snapshot.connectionState == ConnectionState.waiting)
+                    {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LoadingAnimationWidget.waveDots(color: Colors.cyan, size: 10),
+                        ],
+                      );
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.done 
+                        && snapshot.hasData)
+                    {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(snapshot.data!.username),
+                          Text(_dateFormatter.format(comment.createdDate!), style: const TextStyle(fontSize: 10),)
+                        ],
+                      );
+                    }
+
+                    return const Text('');
+                  }) 
+                ),
                 subtitle: Text(comment.text!),
               ),
             );

@@ -47,6 +47,7 @@ dependencies:
   comment_box: ^0.0.18
   intl: ^0.17.0
   xid: ^1.0.12
+  loading_animation_widget:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

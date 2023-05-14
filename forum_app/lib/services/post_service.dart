@@ -93,10 +93,8 @@ class PostService
 
     var dbRef = FirebaseDatabase.instance.ref().child('user');
     var userId = Provider.of<UserModel?>(context, listen: false)!.id;
-    DataSnapshot snapshot = await dbRef.child(userId).get();
     
-    post.comments!.add(Comment(snapshot.child('username').value.toString(), text));
-
+    post.comments!.add(Comment(userId, text, DateTime.now()));
 
     dbRef = FirebaseDatabase.instance.ref().child('post');
 
@@ -107,8 +105,9 @@ class PostService
     else{
       var newKey = dbRef.child(post.id!).child('comments').push();
       var keyValue = newKey.key.toString();
-      dbRef.child(post.id!).child('comments').child(keyValue).child('username').set(post.comments!.last.username);
+      dbRef.child(post.id!).child('comments').child(keyValue).child('username').set(userId);
       dbRef.child(post.id!).child('comments').child(keyValue).child('text').set(post.comments!.last.text);
+      dbRef.child(post.id!).child('comments').child(keyValue).child('createdDate').set(post.comments!.last.createdDate.toString());
     }
   }
 }
