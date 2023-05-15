@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/models/interests.dart';
 import 'package:forum_app/models/post.dart';
+import 'package:forum_app/services/auth/service.dart';
 import 'package:forum_app/services/post_service.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -21,16 +22,24 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+  final AuthServices _authServices = AuthServices();
   final PostService _postService = PostService();
   final ScrollController _scrollController = ScrollController(); 
   final TextEditingController _commentController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('dd.MM HH:MM');
-
+  bool isFirstBuild = true;
+  
   Future<void> loadUserInfo() async
   {
-    var info = await _postService.getUserInfo(widget.post.username!);
+    var info = await _authServices.getUserInfo(widget.post.username!);
     widget.userImg = info.userImg;
     widget.userName = info.username;
+  }
+
+  Future<void> loadCommentsInfo() async
+  {
+    await _authServices.cacheUserInfo(widget.post.comments!, isFirstBuild);
+    isFirstBuild = false;
   }
 
   Widget commentChild()
@@ -44,57 +53,25 @@ class _PostPageState extends State<PostPage> {
           (comment) {
             return Card(    
               child: ListTile(
-                leading: FutureBuilder(
-                  future: _postService.getUserInfo(comment.username!),
-                  builder: ((context, snapshot) 
-                  {
-                    if (snapshot.connectionState == ConnectionState.none || 
-                        snapshot.connectionState == ConnectionState.waiting)
-                    {
-                      return LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 30);
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.done)
-                    {
-                      return CircleAvatar(
+                leading: _authServices.uniqueUsers[comment.username] == null
+                  ? LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 30)
+                  : CircleAvatar(
                         backgroundImage: NetworkImage(
-                            snapshot.data!.userImg),
-                      );
-                    }
-
-                    return const Text('');
-                  }) 
-                ),
-                title: FutureBuilder(
-                  future: _postService.getUserInfo(comment.username!),
-                  builder: ((context, snapshot) 
-                  {
-                    if (snapshot.connectionState == ConnectionState.none || 
-                        snapshot.connectionState == ConnectionState.waiting)
-                    {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          LoadingAnimationWidget.waveDots(color: Colors.cyan, size: 10),
-                        ],
-                      );
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.done 
-                        && snapshot.hasData)
-                    {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(snapshot.data!.username),
-                          Text(_dateFormatter.format(comment.createdDate!), style: const TextStyle(fontSize: 10),)
-                        ],
-                      );
-                    }
-
-                    return const Text('');
-                  }) 
-                ),
+                            _authServices.uniqueUsers[comment.username]!.userImg),),
+                title:_authServices. uniqueUsers[comment.username] == null
+                  ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LoadingAnimationWidget.waveDots(color: Colors.cyan, size: 10),
+                    ],
+                  )
+                  : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(_authServices.uniqueUsers[comment.username]!.username),
+                        Text(_dateFormatter.format(comment.createdDate!), style: const TextStyle(fontSize: 10),)
+                      ]
+                    ),    
                 subtitle: Text(comment.text!),
               ),
             );
@@ -267,7 +244,12 @@ class _PostPageState extends State<PostPage> {
                             padding: EdgeInsets.all(10.0),
                             child: Text("Комментариев пока нет..."),
                         )
-                        : commentChild(),
+                        : FutureBuilder(
+                          future: loadCommentsInfo(),
+                          builder: (context, snapshot)
+                          {
+                            return commentChild();
+                          }) ,
                       ]),
                   ],),
                 ],),

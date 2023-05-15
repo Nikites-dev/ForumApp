@@ -1,10 +1,8 @@
 import 'dart:io';
 
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:forum_app/services/image_service.dart'; 
-import 'package:forum_app/models/user_info.dart';
 import 'package:provider/provider.dart';
 
 import '../models/comment.dart';
@@ -50,15 +48,6 @@ class PostService
       dbRef.child(keyValue).child('createPost').set(post.createPost.toString());
       dbRef.child(keyValue).child('comments').set(post.comments.toString());
       dbRef.child(keyValue).child('likes').set(post.likes.toString());
-  }
-
-  Future<UserInfo> getUserInfo(String userId) async
-  {
-    var dbRef = FirebaseDatabase.instance.ref().child('user');
-    DataSnapshot snapshot = await dbRef.child(userId).get();
-    var userImg = snapshot.child('image').value.toString();
-    var userName = snapshot.child('username').value.toString();
-    return UserInfo(userName, userImg);
   }
 
   Future<void> likePost(BuildContext context, Post post) async

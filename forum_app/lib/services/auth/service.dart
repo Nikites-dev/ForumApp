@@ -3,11 +3,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/comment.dart';
+import '../../models/user_info.dart' as models_user_info;
 import '../../responses/auth_responses.dart';
 import 'model.dart';
 
 class AuthServices {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  Map<String, models_user_info.UserInfo> uniqueUsers = <String, models_user_info.UserInfo>{};
 
   Stream<UserModel?> get currentUser {
     return _firebaseAuth.authStateChanges().map(
@@ -107,5 +110,37 @@ class AuthServices {
         .child(userId.toString())
         .child("interests")
         .set(selectedInterests);
+  }
+ 
+  Future<void> cacheUserInfo(List<Comment> comments, bool isFirstBuild) async
+  {
+    if (isFirstBuild)
+    {
+      for(int i= 0; i < comments.length; ++i)
+      {
+        var userId = comments[i].username;
+        if (!uniqueUsers.containsKey(userId))
+        {
+          var userInfo = await getUserInfo(userId!);
+          uniqueUsers.addAll({userId: userInfo});
+        }
+      }
+    } else {
+      var userId = comments.last.username;
+      if (!uniqueUsers.containsKey(userId))
+      {
+        var userInfo = await getUserInfo(userId!);
+        uniqueUsers.addAll({userId: userInfo});
+      }
+    }
+  }
+
+  Future<models_user_info.UserInfo> getUserInfo(String userId) async
+  {
+    var dbRef = FirebaseDatabase.instance.ref().child('user');
+    DataSnapshot snapshot = await dbRef.child(userId).get();
+    var userImg = snapshot.child('image').value.toString();
+    var userName = snapshot.child('username').value.toString();
+    return models_user_info.UserInfo(userName, userImg);
   }
 }
