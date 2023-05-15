@@ -1,16 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:forum_app/models/interests.dart';
 import 'package:forum_app/models/post.dart';
-import 'package:flutter/material.dart';
 import 'package:forum_app/pages/post_page.dart';
-import 'package:infinite_listview/infinite_listview.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import '../models/user.dart';
 

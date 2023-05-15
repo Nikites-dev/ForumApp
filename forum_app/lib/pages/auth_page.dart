@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forum_app/widgets/inputWidget.dart';
 import 'package:forum_app/services/auth/service.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});

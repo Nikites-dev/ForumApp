@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/models/interests.dart';
 import 'package:forum_app/models/post.dart';
@@ -16,7 +17,7 @@ class PostPage extends StatefulWidget {
   String? userImg = "";
 
   PostPage({super.key, required this.post});
-
+  
   @override
   State<PostPage> createState() => _PostPageState();
 }
@@ -28,6 +29,7 @@ class _PostPageState extends State<PostPage> {
   final TextEditingController _commentController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('dd.MM HH:MM');
   bool isFirstBuild = true;
+  bool isCommentFilled = false;
   
   Future<void> loadUserInfo() async
   {
@@ -40,6 +42,16 @@ class _PostPageState extends State<PostPage> {
   {
     await _authServices.cacheUserInfo(widget.post.comments!, isFirstBuild);
     isFirstBuild = false;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _commentController.addListener(() {
+      setState(() {
+        isCommentFilled = _commentController.text.isNotEmpty;
+      });
+    });
   }
 
   Widget commentChild()
@@ -141,7 +153,18 @@ class _PostPageState extends State<PostPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(Interests.list[widget.post.interestsId!].name!),
+                          child: ActionChip(
+                            onPressed: () {},
+                            avatar: Padding(
+                              padding: const EdgeInsets.only(left: 4.0, bottom: 4.0,),
+                              child: Icon(Interests.list[widget.post.interestsId!].icon!.icon, color: Colors.black,),
+                            ),
+                            label: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Text(Interests.list[widget.post.interestsId!].name!),
+                            ),
+                            backgroundColor: Interests.list[widget.post.interestsId!].backgroundColor!,
+                            ),
                         ),
                       ],
                     ),
@@ -154,8 +177,8 @@ class _PostPageState extends State<PostPage> {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(widget.post.title!,
                         style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -177,7 +200,7 @@ class _PostPageState extends State<PostPage> {
                       child: Text(
                         widget.post.text!,
                         style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w300),
+                          fontSize: 18, fontWeight: FontWeight.w300),
                       ), 
                     ),
                     Column(
@@ -198,7 +221,7 @@ class _PostPageState extends State<PostPage> {
                                     const MaterialStatePropertyAll(Colors.white),
                               ),
                               child: Row(children: [
-                                Icon(Icons.arrow_upward_rounded,
+                                Icon(CupertinoIcons.heart_fill,
                                     color: widget.post.likes == null 
                                     ? Colors.grey 
                                     : (widget.post.likes!.contains(Provider.of<UserModel?>(context, listen: false)!.id) 
@@ -274,7 +297,7 @@ class _PostPageState extends State<PostPage> {
               child: IconButton(
                 icon: const Icon(Icons.send),
                 color: Colors.cyan,
-                onPressed: () {
+                onPressed: !isCommentFilled ? null :  () {
                   setState(() {
                     _postService.sendComment(context, widget.post, _commentController.text);
                     _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
