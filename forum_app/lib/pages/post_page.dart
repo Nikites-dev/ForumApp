@@ -1,21 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:date_format/date_format.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:forum_app/models/interests.dart';
 import 'package:forum_app/models/post.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:forum_app/services/post_service.dart';
+import 'package:forum_app/widgets/post_info_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:provider/provider.dart';
-import '../services/auth/model.dart';
 import '../widgets/inputWidget.dart';
+import '../widgets/post_user_info_widget.dart';
 
 class PostPage extends StatefulWidget {
   Post post;
-  String? userName;
-  String? userImg = "";
 
   PostPage({super.key, required this.post});
   
@@ -31,15 +25,8 @@ class _PostPageState extends State<PostPage> {
   final DateFormat _dateFormatter = DateFormat('dd.MM.y HH:mm');
   bool isFirstBuild = true;
   bool isCommentFilled = false;
-  
-  Future<void> loadUserInfo() async
-  {
-    var info = await _authServices.getUserInfo(widget.post.username!);
-    widget.userImg = info.userImg;
-    widget.userName = info.username;
-  }
 
-  Future<void> loadCommentsInfo() async
+  Future<void> cacheUsersInfo() async
   {
     await _authServices.cacheUserInfo(widget.post.comments!, isFirstBuild);
     isFirstBuild = false;
@@ -55,7 +42,7 @@ class _PostPageState extends State<PostPage> {
     });
   }
 
-  Widget commentChild()
+  Widget commentsListView()
   { 
     return Padding(
       padding: const EdgeInsets.all(5.0),
@@ -109,174 +96,29 @@ class _PostPageState extends State<PostPage> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        FutureBuilder(
-                          future: loadUserInfo(),
-                          builder: (context, snapshot)
-                          {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    widget.userImg!),
-                              )
-                            );
-                          }
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            FutureBuilder(
-                              future: loadUserInfo(),
-                              builder: (context, snapshot)
-                              {
-                                return Padding(
-                                  padding: const EdgeInsets.all(1.0),
-                                  child: Text(widget.userName ?? ""),
-                                );
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(1.0),
-                              child: widget.post.createPost == null 
-                              ? const Text("не указано") 
-                              : Text(_dateFormatter.format(widget.post.createPost!)),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ActionChip(
-                            onPressed: () {},
-                            avatar: Padding(
-                              padding: const EdgeInsets.only(left: 4.0, bottom: 4.0,),
-                              child: Icon(Interests.list[widget.post.interestsId!].icon!.icon, color: Colors.black,),
-                            ),
-                            label: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(Interests.list[widget.post.interestsId!].name!),
-                            ),
-                            backgroundColor: Interests.list[widget.post.interestsId!].backgroundColor!,
-                            ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                PostUserInfoWidget(post: widget.post),
+                PostInfoWidget(post: widget.post),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(widget.post.title!,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                    const Divider(),
+                    const Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Text("Комментарии", style: TextStyle(color: Colors.grey)),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: widget.post.imgUrl == null
-                        ? const Text("Пост без изображения",
-                            style: TextStyle(fontSize: 18,))
-                        : CachedNetworkImage(
-                            imageUrl: widget.post.imgUrl!,
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        widget.post.text!,
-                        style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w300),
-                      ), 
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _postService.likePost(context, widget.post);
-                                });
-                              },
-                              style: ButtonStyle(
-                                elevation:
-                                    MaterialStateProperty.all<double>(0),
-                                backgroundColor:
-                                    const MaterialStatePropertyAll(Colors.white),
-                              ),
-                              child: Row(children: [
-                                Icon(CupertinoIcons.heart_fill,
-                                    color: widget.post.likes == null 
-                                    ? Colors.grey 
-                                    : (widget.post.likes!.contains(Provider.of<UserModel?>(context, listen: false)!.id) 
-                                    ? Colors.red 
-                                    : Colors.grey)),
-                                const SizedBox(width: 2.0),
-                                Text(widget.post.likes == null ? "0" : widget.post.likes!.length.toString(),
-                                    style: const TextStyle(
-                                      color: Colors.grey),
-                                ),
-                              ]),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ButtonStyle(
-                                elevation:
-                                MaterialStateProperty.all<
-                                    double>(0),
-                                backgroundColor:
-                                const MaterialStatePropertyAll(
-                                    Colors.white),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons
-                                      .message_outlined,
-                                      color: Colors.grey),
-                                  const SizedBox(width: 5.0),
-                                  Text(widget.post.comments == null ? "0" : widget.post.comments!.length.toString(),
-                                    style: const TextStyle(
-                                        color: Colors.grey),
-                                  ),
-                              ],),
-                            ),
-                        ],),
-                        const Divider(),
-                        const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Text("Комментарии", style: TextStyle(color: Colors.grey)),
-                        ),
-                        widget.post.comments == null
-                        ? const Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text("Комментариев пока нет..."),
-                        )
-                        : FutureBuilder(
-                          future: loadCommentsInfo(),
-                          builder: (context, snapshot)
-                          {
-                            return commentChild();
-                          }) ,
-                      ]),
-                  ],),
-                ],),
+                    widget.post.comments == null
+                    ? const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text("Комментариев пока нет..."),
+                    )
+                    : FutureBuilder(
+                      future: cacheUsersInfo(),
+                      builder: (context, snapshot)
+                      {
+                        return commentsListView();
+                      }) ,
+                  ]),
+              ],),
         ),
       ),
       bottomNavigationBar: Padding(

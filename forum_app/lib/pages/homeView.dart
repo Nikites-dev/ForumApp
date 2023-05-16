@@ -7,9 +7,10 @@ import 'package:forum_app/models/post.dart';
 import 'package:forum_app/pages/post_page.dart';
 import 'package:intl/intl.dart';
 import '../models/user.dart';
+import '../widgets/interest_chip_widget.dart';
 
 class MainView extends StatefulWidget {
-  const MainView({super.key});
+  const MainView({super.key,});
 
   @override
   State<MainView> createState() => _MainViewState();
@@ -136,17 +137,23 @@ class _MainViewState extends State<MainView> {
                                                         ),
                                                       ),
 
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(
-                                                            1.0),
-                                                        child: Text(username.toString()),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(
-                                                            1.0),
-                                                        child: Text(formatter.format(post.createPost!), style: TextStyle(fontSize: 10)),
-                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.all(
+                                                                1.0),
+                                                            child: Text(username.toString()),
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.all(
+                                                                1.0),
+                                                            child: Text(formatter.format(post.createPost!), style: TextStyle(fontSize: 10)),
+                                                          ),
 
+                                                        ],
+                                                      ),
+                                                      
 
 
                                                     ],);
@@ -161,7 +168,7 @@ class _MainViewState extends State<MainView> {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child: Text(GetInterestById( post.interestsId!)),
+                                              child: InterestChipWidget(post: post),
                                             ),
                                           ],
                                         ),
