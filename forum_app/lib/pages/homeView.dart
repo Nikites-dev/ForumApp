@@ -23,7 +23,7 @@ class _MainViewState extends State<MainView> {
   DatabaseReference? dbRefUser;
   int index = 0;
 
-  DateFormat formatter = DateFormat('dd.MM HH:MM');
+  DateFormat formatter = DateFormat('dd.MM.y HH:mm');
 
   Future<List<Post>> getListPosts() async {
     final snapshot = await FirebaseDatabase.instance.ref('post').get();
