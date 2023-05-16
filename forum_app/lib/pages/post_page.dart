@@ -35,6 +35,7 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
+    _authServices.cacheInfo(widget.post.username!);
     _commentController.addListener(() {
       setState(() {
         isCommentFilled = _commentController.text.isNotEmpty;
@@ -53,12 +54,12 @@ class _PostPageState extends State<PostPage> {
           (comment) {
             return Card(    
               child: ListTile(
-                leading: _authServices.uniqueUsers[comment.username] == null
+                leading: AuthServices.uniqueUsers[comment.username] == null || AuthServices.uniqueUsers[comment.username]!.userImg == 'null'
                   ? LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 30)
                   : CircleAvatar(
                         backgroundImage: NetworkImage(
-                            _authServices.uniqueUsers[comment.username]!.userImg),),
-                title:_authServices. uniqueUsers[comment.username] == null
+                            AuthServices.uniqueUsers[comment.username]!.userImg),),
+                title: AuthServices.uniqueUsers[comment.username] == null || AuthServices.uniqueUsers[comment.username]!.username == 'null'
                   ? Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -68,7 +69,7 @@ class _PostPageState extends State<PostPage> {
                   : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(_authServices.uniqueUsers[comment.username]!.username),
+                        Text(AuthServices.uniqueUsers[comment.username]!.username),
                         Text(_dateFormatter.format(comment.createdDate!), style: const TextStyle(fontSize: 10),)
                       ]
                     ),    
@@ -97,7 +98,7 @@ class _PostPageState extends State<PostPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 PostUserInfoWidget(post: widget.post),
-                PostInfoWidget(post: widget.post),
+                PostInfoWidget(post: widget.post, isForList: false,),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

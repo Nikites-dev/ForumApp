@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:forum_app/services/auth/service.dart';
 import 'package:forum_app/services/image_service.dart'; 
 import 'package:provider/provider.dart';
 
@@ -12,6 +13,7 @@ import 'auth/model.dart';
 class PostService
 {
   final ImageService _imgService = ImageService();
+  final AuthServices _authServices = AuthServices();
 
   Future<Post> createPost(BuildContext context, String title, String text, File? image) async
   {
@@ -74,6 +76,20 @@ class PostService
     {
       dbRef.child(post.id!).child('likes').set(post.likes);
     }
+  }
+
+  List<Post> convertPosts(Map<dynamic, dynamic> postsMap) {
+    List<Post> posts = [];
+
+    if (postsMap.isNotEmpty)
+    {
+      postsMap.forEach((key, value) {
+        final post = Post.fromMap(value);
+        posts.add(post);
+      });
+    }
+    
+    return posts;
   }
 
   Future<void> sendComment(BuildContext context, Post post, String text) async

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forum_app/pages/homeView.dart';
+import 'package:forum_app/pages/main_view.dart';
 import 'package:forum_app/pages/profileView.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,10 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   final TextEditingController _searchController = TextEditingController();
   int index = 0;
-  final listPages = [
-    MainView(),
-    ProfileView(),
-  ];
+  List<Widget> listPages = [];
 
   RemoveLocalData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -33,7 +30,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _searchController.text = '';
+  }
+  @override
   Widget build(BuildContext context) {
+    listPages = [
+      MainView(_searchController.text),
+      ProfileView(),
+    ];
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

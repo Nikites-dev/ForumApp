@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../models/post.dart';
+import '../services/auth/model.dart';
 import '../services/auth/service.dart';
 import 'interest_chip_widget.dart';
 
@@ -27,48 +30,48 @@ class _PostUserInfoWidgetState extends State<PostUserInfoWidget> {
     widget.userName = info.username;
   }
 
+  Future<void> cacheUserInfo() async
+  {
+    await _authServices.cacheInfo(widget.post.username!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            FutureBuilder(
-              future: loadUserInfo(),
-              builder: (context, snapshot)
-              {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        widget.userImg!),
-                  )
-                );
-              }
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        FutureBuilder(
+          future: cacheUserInfo(),
+          builder: (context, snapshot) {
+            return Row(
               children: [
-                FutureBuilder(
-                  future: loadUserInfo(),
-                  builder: (context, snapshot)
-                  {
-                    return Padding(
-                      padding: const EdgeInsets.all(1.0),
-                      child: Text(widget.userName ?? ""),
-                    );
-                  },
-                ),
                 Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: widget.post.createPost == null 
-                  ? const Text("не указано") 
-                  : Text(_dateFormatter.format(widget.post.createPost!)),
+                  padding: const EdgeInsets.all(8.0),
+                  child: AuthServices.uniqueUsers[widget.post.username]!.userImg != 'null' ? CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        AuthServices.uniqueUsers[widget.post.username]!.userImg,),
+                  )
+                  : LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 30)
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: AuthServices.uniqueUsers[widget.post.username]!.username != 'null' ? [
+                    Padding(
+                          padding: const EdgeInsets.all(1.0),
+                          child: Text(AuthServices.uniqueUsers[widget.post.username]!.username),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: widget.post.createPost == null 
+                      ? const Text("не указано") 
+                      : Text(_dateFormatter.format(widget.post.createPost!)),
+                    ),
+                  ] 
+                  : [LoadingAnimationWidget.waveDots(color: Colors.cyan, size: 10),]
                 ),
               ],
-            ),
-          ],
+            );
+          } 
         ),
         Row(
           children: [

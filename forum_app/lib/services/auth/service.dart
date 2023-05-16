@@ -10,7 +10,7 @@ import 'model.dart';
 
 class AuthServices {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  Map<String, models_user_info.UserInfo> uniqueUsers = <String, models_user_info.UserInfo>{};
+  static Map<String, models_user_info.UserInfo> uniqueUsers = <String, models_user_info.UserInfo>{};
 
   Stream<UserModel?> get currentUser {
     return _firebaseAuth.authStateChanges().map(
@@ -119,20 +119,22 @@ class AuthServices {
       for(int i= 0; i < comments.length; ++i)
       {
         var userId = comments[i].username;
-        if (!uniqueUsers.containsKey(userId))
-        {
-          var userInfo = await getUserInfo(userId!);
-          uniqueUsers.addAll({userId: userInfo});
-        }
+        cacheInfo(userId!);
       }
     } else {
       var userId = comments.last.username;
-      if (!uniqueUsers.containsKey(userId))
-      {
-        var userInfo = await getUserInfo(userId!);
-        uniqueUsers.addAll({userId: userInfo});
-      }
+      cacheInfo(userId!);
     }
+  }
+
+  Future<void> cacheInfo(String userId) async
+  {
+    if (!uniqueUsers.containsKey(userId))
+      {
+        uniqueUsers.addAll({userId: models_user_info.UserInfo('null', 'null')});
+        var userInfo = await getUserInfo(userId);
+        uniqueUsers[userId] = userInfo;
+      }
   }
 
   Future<models_user_info.UserInfo> getUserInfo(String userId) async

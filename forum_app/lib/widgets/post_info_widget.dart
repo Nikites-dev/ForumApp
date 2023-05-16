@@ -9,7 +9,8 @@ import '../services/post_service.dart';
 
 class PostInfoWidget extends StatefulWidget {
   Post post;
-  PostInfoWidget({super.key, required this.post});
+  bool? isForList = false;
+  PostInfoWidget({super.key, required this.post, this.isForList});
 
   @override
   State<PostInfoWidget> createState() => _PostInfoWidgetState();
@@ -17,6 +18,13 @@ class PostInfoWidget extends StatefulWidget {
 
 class _PostInfoWidgetState extends State<PostInfoWidget> {
   final PostService _postService = PostService();
+
+  String setShortText(String text) {
+    if (text.length > 150) {
+      return "${text.toString().substring(0, 150).trim()}...";
+    }
+    return text;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,25 +40,56 @@ class _PostInfoWidgetState extends State<PostInfoWidget> {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: widget.post.imgUrl == null || widget.post.imgUrl == "null"
-            ? const Text("",)
-            : CachedNetworkImage(
-                imageUrl: widget.post.imgUrl!,
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) =>
-                    const Icon(Icons.error),
-              ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            widget.post.text!,
-            style: const TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w300),
-          ), 
+        !widget.isForList! ? 
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: widget.post.imgUrl == null || widget.post.imgUrl == "null"
+                ? const Text("",)
+                : CachedNetworkImage(
+                    imageUrl: widget.post.imgUrl!,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
+            ),
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  widget.post.text!,
+                  style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.w300),
+                ), 
+            ),
+          ],
+        )
+        : Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: widget.post.imgUrl == null || widget.post.imgUrl == "null"
+                ? const Padding(padding: EdgeInsets.all(0.0))
+                : CachedNetworkImage(
+                    imageUrl: widget.post.imgUrl!,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
+            ),
+            widget.post.imgUrl == null || widget.post.imgUrl == "null" 
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  setShortText(widget.post.text!),
+                  style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.w300),
+                ), 
+            )
+            : const Padding(padding: EdgeInsets.all(0.0),)
+          ],
         ),
         Row(
           children: [
