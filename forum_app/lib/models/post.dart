@@ -42,6 +42,8 @@ class Post {
       map['likes'].forEach((obj) {likes.add(obj.toString());});
     }
 
+    comments.sort(((a, b) => a.createdDate!.compareTo(b.createdDate!)));
+
     return Post(
       id: map['id'] ?? '',
       username: map['username'] ?? '',

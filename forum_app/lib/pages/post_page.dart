@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/models/interests.dart';
@@ -27,7 +28,7 @@ class _PostPageState extends State<PostPage> {
   final PostService _postService = PostService();
   final ScrollController _scrollController = ScrollController(); 
   final TextEditingController _commentController = TextEditingController();
-  final DateFormat _dateFormatter = DateFormat('dd.MM HH:MM');
+  final DateFormat _dateFormatter = DateFormat('dd.MM.y HH:mm');
   bool isFirstBuild = true;
   bool isCommentFilled = false;
   
