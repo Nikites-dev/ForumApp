@@ -33,7 +33,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _searchController.text = '';
+    _searchController.addListener(() {
+        setState(() {});
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     listPages = [
@@ -52,7 +56,7 @@ class _HomePageState extends State<HomePage> {
               child: InputWidget(
                 _searchController,
                 color: Colors.black,
-                icon: Icon(Icons.search, color: Colors.black),
+                icon: const Icon(Icons.search, color: Colors.black),
                 labelText: 'Search',
               ),
             ),
@@ -71,8 +75,7 @@ class _HomePageState extends State<HomePage> {
       body: listPages.elementAt(index),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.of(context).push(MaterialPageRoute(
-          //     builder: (context) => Navigator.(context) => CreatePage()));
+          FocusManager.instance.primaryFocus?.unfocus();
           Navigator.pushNamed(context, '/create');
         },
         backgroundColor: Colors.cyan.shade700,

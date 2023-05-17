@@ -64,7 +64,7 @@ class _PostUserInfoWidgetState extends State<PostUserInfoWidget> {
                       padding: const EdgeInsets.all(1.0),
                       child: widget.post.createPost == null 
                       ? const Text("не указано") 
-                      : Text(_dateFormatter.format(widget.post.createPost!)),
+                      : Text(_dateFormatter.format(widget.post.createPost!), style: TextStyle(fontSize: 12),),
                     ),
                   ] 
                   : [LoadingAnimationWidget.waveDots(color: Colors.cyan, size: 10),]

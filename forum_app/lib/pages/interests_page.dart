@@ -6,7 +6,8 @@ import '../services/post_service.dart';
 
 class InterestsPage extends StatefulWidget {
   Post? post;
-  InterestsPage({super.key, required this.post});
+  List<int>? currentInterests;
+  InterestsPage({super.key, required this.post, this.currentInterests});
 
   @override
   State<InterestsPage> createState() => _InterestsPageState(post);
@@ -17,7 +18,7 @@ class _InterestsPageState extends State<InterestsPage> {
   final PostService _postService = PostService();
   Post? post;
   bool isCreatePost = false;
-  final List<String> _selectedInterests = [];
+  List<int> _selectedInterests = [];
 
   _InterestsPageState(Post? crntPost) {
     post = crntPost;
@@ -26,6 +27,13 @@ class _InterestsPageState extends State<InterestsPage> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.currentInterests != null)
+    {
+      setState(() {
+        _selectedInterests = widget.currentInterests!;
+      });
+    }
 
     if (post != null) {
       isCreatePost = true;
@@ -62,7 +70,7 @@ class _InterestsPageState extends State<InterestsPage> {
               onPressed: () {
                 if (_selectedInterests.isEmpty) {
                   final snackBar = SnackBar(
-                    content: const Text('Select interests!'),
+                    content: const Text('Выберите тему!'),
                     backgroundColor: Colors.primaries.first,
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -111,7 +119,7 @@ class _InterestsPageState extends State<InterestsPage> {
             avatar: Interests.list[i].icon,
             label: Text(Interests.list[i].name.toString(),
                 style: const TextStyle(fontSize: 20, color: Colors.black54)),
-            backgroundColor: _selectedInterests.contains(Interests.list[i].name)
+            backgroundColor: _selectedInterests.contains(i)
                 ? const Color.fromARGB(255, 189, 243, 192)
                 : Colors.white,
             onPressed: () {
@@ -120,15 +128,15 @@ class _InterestsPageState extends State<InterestsPage> {
                   _selectedInterests.clear();
                 }
 
-                if (_selectedInterests.contains(Interests.list[i].name)) {
-                  _selectedInterests.remove(Interests.list[i].name);
+                if (_selectedInterests.contains(i)) {
+                  _selectedInterests.remove(i);
                   return;
                 }
 
                 if (isCreatePost) {
                   post?.interestsId = i;
                 }
-                _selectedInterests.add(Interests.list[i].name!);
+                _selectedInterests.add(i);
               });
             },
             pressElevation: 5,

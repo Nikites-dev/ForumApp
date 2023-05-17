@@ -25,7 +25,7 @@ class _InterestChipWidgetState extends State<InterestChipWidget> {
       ),
       label: Padding(
         padding: const EdgeInsets.all(4.0),
-        child: Text(Interests.list[widget.post.interestsId!].name!),
+        child: Text(Interests.list[widget.post.interestsId!].name!, style: const TextStyle(fontSize: 12),),
       ),
       backgroundColor: Interests.list[widget.post.interestsId!].backgroundColor!,
     );

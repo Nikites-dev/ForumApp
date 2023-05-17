@@ -42,6 +42,7 @@ class _PostInfoWidgetState extends State<PostInfoWidget> {
         ),
         !widget.isForList! ? 
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -66,30 +67,31 @@ class _PostInfoWidgetState extends State<PostInfoWidget> {
           ],
         )
         : Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: widget.post.imgUrl == null || widget.post.imgUrl == "null"
-                ? const Padding(padding: EdgeInsets.all(0.0))
-                : CachedNetworkImage(
-                    imageUrl: widget.post.imgUrl!,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  ),
-            ),
-            widget.post.imgUrl == null || widget.post.imgUrl == "null" 
-            ? Padding(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  setShortText(widget.post.text!),
-                  style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.w300),
-                ), 
-            )
-            : const Padding(padding: EdgeInsets.all(0.0),)
-          ],
+                child: widget.post.imgUrl == null || widget.post.imgUrl == "null"
+                  ? const Padding(padding: EdgeInsets.all(0.0))
+                  : CachedNetworkImage(
+                      imageUrl: widget.post.imgUrl!,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
+              ),
+              widget.post.imgUrl == null || widget.post.imgUrl == "null" 
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    setShortText(widget.post.text!),
+                    style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.w300),
+                  ), 
+              )
+              : const Padding(padding: EdgeInsets.all(0.0),)
+            ],
         ),
         Row(
           children: [

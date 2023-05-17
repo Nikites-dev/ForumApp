@@ -54,7 +54,7 @@ class _PostPageState extends State<PostPage> {
           (comment) {
             return Card(    
               child: ListTile(
-                leading: AuthServices.uniqueUsers[comment.username] == null || AuthServices.uniqueUsers[comment.username]!.userImg == 'null'
+                leading: AuthServices.uniqueUsers[comment.username] == null
                   ? LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 30)
                   : CircleAvatar(
                         backgroundImage: NetworkImage(

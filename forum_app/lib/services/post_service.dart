@@ -115,4 +115,34 @@ class PostService
       dbRef.child(post.id!).child('comments').child(keyValue).child('createdDate').set(post.comments!.last.createdDate.toString());
     }
   }
+
+  List<Post> getPostByInterests(List<int> interests, List<Post> posts, String searchText)
+  {
+    List<Post> filteredList = posts
+        .where((Post post) => post.title!.toLowerCase().contains(searchText.toLowerCase()) && interests.contains(post.interestsId))
+        .toList();
+
+    filteredList.sort(((a, b) => b.createPost!.compareTo(a.createPost!)));
+    return filteredList;
+  }
+
+  List<Post> getLikedPosts(List<Post> posts, String searchText, String userId)
+  {
+    List<Post> filteredList = posts
+        .where((Post post) => (post.likes != null ? post.likes!.contains(userId) : false) && post.title!.toLowerCase().contains(searchText.toLowerCase()))
+        .toList();
+
+    filteredList.sort(((a, b) => b.createPost!.compareTo(a.createPost!)));
+    return filteredList;
+  }
+
+  List<Post> getUserPosts(List<Post> posts, String searchText, String userId)
+  {
+    List<Post> filteredList = posts
+        .where((Post post) => post.title!.toLowerCase().contains(searchText.toLowerCase()) && post.username == userId)
+        .toList();
+
+    filteredList.sort(((a, b) => b.createPost!.compareTo(a.createPost!)));
+    return filteredList;
+  }
 }

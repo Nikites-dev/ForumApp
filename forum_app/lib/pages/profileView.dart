@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:forum_app/pages/interests_page.dart';
+import 'package:forum_app/services/auth/service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +23,8 @@ class ProfileView extends StatefulWidget {
 class Profile extends State<ProfileView> {
   TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
+  final AuthServices _authServices = AuthServices();
+  List<int> userInterests = [];
 
   File? file;
   String? userId;
@@ -31,10 +35,18 @@ class Profile extends State<ProfileView> {
   bool isSelectUserImage = false;
 
   DatabaseReference? dbRef;
+  void setUserInterests() async{
+    if (userInterests.isEmpty)
+    {
+      userInterests = await _authServices.getUserInterest(Provider.of<UserModel?>(context, listen: false)!.id);
+      setState(() {});
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    setUserInterests();
     getLocalData();
     dbRef = FirebaseDatabase.instance.ref().child('user');
     GetImg();
@@ -154,6 +166,13 @@ class Profile extends State<ProfileView> {
                             ),
                           ),
 
+                          ElevatedButton(
+                            onPressed: (){
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    InterestsPage(post: null, currentInterests: userInterests)));
+                            }, 
+                            child: Text('Интересы')),
                           Text(
                             username.text,
                             style: TextStyle(
@@ -287,6 +306,7 @@ class Profile extends State<ProfileView> {
         await dbRef!.child(userId.toString()).child("image").set(url);
 
         isSelectUserImage = false;
+        _authServices.updateCacheInfo(userId!);
 
         // await dbRef!.child(userId).set(_usernameController.text.toString());
         // Map<String, String> User = {

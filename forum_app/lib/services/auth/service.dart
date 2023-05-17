@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/comment.dart';
+import '../../models/interests.dart';
 import '../../models/user_info.dart' as models_user_info;
 import '../../responses/auth_responses.dart';
 import 'model.dart';
@@ -100,10 +101,10 @@ class AuthServices {
         .set(password);
   }
 
-  Future updateUserInterests(BuildContext context, List<String> selectedInterests) async
+  Future updateUserInterests(BuildContext context, List<int> selectedInterests) async
   {
     var userId = Provider.of<UserModel?>(context, listen: false)!.id;
-    var dbRef = FirebaseDatabase.instance.ref().child('user');
+    var dbRef = FirebaseDatabase.instance.ref();
 
     await dbRef
         .child('user')
@@ -119,11 +120,11 @@ class AuthServices {
       for(int i= 0; i < comments.length; ++i)
       {
         var userId = comments[i].username;
-        cacheInfo(userId!);
+        await cacheInfo(userId!);
       }
     } else {
       var userId = comments.last.username;
-      cacheInfo(userId!);
+      await cacheInfo(userId!);
     }
   }
 
@@ -144,5 +145,27 @@ class AuthServices {
     var userImg = snapshot.child('image').value.toString();
     var userName = snapshot.child('username').value.toString();
     return models_user_info.UserInfo(userName, userImg);
+  }
+
+  Future<List<int>> getUserInterest(String userId) async
+  {
+    var dbRef = FirebaseDatabase.instance.ref().child('user');
+    DataSnapshot snapshot = await dbRef.child(userId).child('interests').get();
+    List<int> interests = [];
+    snapshot.children.forEach((element) {
+      interests.add(int.parse(element.value.toString()));
+    });
+
+    return interests;
+  }
+
+  Future<void> updateCacheInfo(String userId) async
+  {
+    if (uniqueUsers.containsKey(userId))
+    {
+      uniqueUsers.addAll({userId: models_user_info.UserInfo('null', 'null')});
+      var userInfo = await getUserInfo(userId);
+      uniqueUsers[userId] = userInfo;
+    }
   }
 }
