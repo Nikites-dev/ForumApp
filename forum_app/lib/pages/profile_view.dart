@@ -34,7 +34,10 @@ class Profile extends State<ProfileView> {
 
   void setUserInfo() async{
     user = await _authServices.getUser(Provider.of<UserModel?>(context, listen: false)!.id);
-    setState(() {});
+    if (mounted)
+    {
+      setState(() {});
+    }
   }
 
   selectImage() async {
