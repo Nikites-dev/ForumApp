@@ -112,10 +112,7 @@ class Profile extends State<ProfileView> {
                               child: file == null
                                 ? IconButton(
                                     icon: user == null || user!.image == null
-                                      ? const CircleAvatar(
-                                          radius: 70,
-                                          backgroundImage:
-                                            NetworkImage(''))
+                                      ? LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 120)
                                       : CircleAvatar(
                                           radius: 70,
                                           backgroundImage:
