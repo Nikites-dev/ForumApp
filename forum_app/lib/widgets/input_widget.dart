@@ -4,14 +4,18 @@ class InputWidget extends StatelessWidget {
   static const double _widthScale = 0.8;
   final String labelText;
   final Color color;
+  final Color cursorColor;
   final Icon icon;
   final TextEditingController? controller;
+  final bool isPassword;
 
-  const InputWidget(
+  InputWidget(
     this.controller, {
+    this.isPassword = false,
     super.key,
     this.labelText = "Text",
     this.color = Colors.black,
+    this.cursorColor = Colors.cyan,
     this.icon = const Icon(
       Icons.abc,
     ),
@@ -22,8 +26,11 @@ class InputWidget extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width * _widthScale,
       child: TextField(
+        obscureText: isPassword,
+        enableSuggestions: !isPassword,
+        autocorrect: !isPassword,
         controller: controller,
-        cursorColor: color,
+        cursorColor: cursorColor,
         decoration: InputDecoration(
           label: Text(labelText),
           labelStyle: TextStyle(color: color),
