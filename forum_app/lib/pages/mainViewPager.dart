@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forum_app/pages/main_view.dart';
-import 'package:forum_app/pages/profileView.dart';
+import 'package:forum_app/pages/profile_view.dart';
 import 'package:forum_app/services/auth/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -104,26 +104,6 @@ class _HomePageState extends State<HomePage> {
           });
         },
       ),
-      // body: ListView(
-      //   physics: const BouncingScrollPhysics(),
-      //   children: users.map((user) {
-      //     return Card(
-      //       child: ListTile(
-      //         title: Text(user.name!),
-      //         subtitle: Text(user.login!),
-      //         onTap: () {},
-      //       ),
-      //     );
-      //   }).toList(),
-      // ),
-      // body: ListView.builder(
-      //   itemCount: users.length,
-      //   itemBuilder: (context, index) {
-      //     return ListTile(
-      //       title: Text(users as String),
-      //     );
-      //   },
-      // ),
     );
   }
 }

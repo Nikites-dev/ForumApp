@@ -4,6 +4,7 @@ import 'package:forum_app/pages/auth_page.dart';
 import 'package:forum_app/pages/create_page.dart';
 import 'package:forum_app/pages/interests_page.dart';
 import 'package:forum_app/pages/mainViewPager.dart';
+import 'package:forum_app/pages/profile_view.dart';
 import 'package:forum_app/pages/reg_page.dart';
 import 'package:forum_app/services/auth/landing.dart';
 import 'package:forum_app/services/auth/service.dart';
@@ -32,6 +33,7 @@ class AppThemeMaterial extends StatelessWidget {
           '/home': (context) => const HomePage(),
           '/interests': (context) => InterestsPage(post: null,),
           '/create': (context) => CreatePage(),
+          '/profile': (context) => ProfileView(),
         },
         theme: ThemeData(
             fontFamily: GoogleFonts.montserrat().fontFamily,

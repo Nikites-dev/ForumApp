@@ -27,9 +27,9 @@ class Post {
     List<Comment> comments = [];
     List<String> likes = [];
 
-    if (map['comments'] != "null")
+    if (map['comments'] != "null" && map['comments'] != null)
     {
-      ((map['comments'] as Map<dynamic, dynamic>)).forEach((key, value) {
+      ((map['comments'] ?? [] as Map<dynamic, dynamic>)).forEach((key, value) {
         var commentValue = value as Map<dynamic, dynamic>;
         final comment = Comment((commentValue)['username'],
           (commentValue)['text'], DateTime.parse((commentValue)['createdDate'] ?? ''));
@@ -37,7 +37,7 @@ class Post {
       });
     }
 
-    if (map['likes'] != "null")
+    if (map['likes'] != "null" && map['likes'] != null)
     {
       map['likes'].forEach((obj) {likes.add(obj.toString());});
     }
@@ -50,10 +50,10 @@ class Post {
       title: map['title'] ?? '',
       text: map['text'] ?? '',
       imgUrl: map['imgUrl'] ?? '',
-      interestsId: int.parse(map['interestsId']?? '') ,
-      createPost: DateTime.parse(map['createPost'] ?? ''),
-      comments: map['comments'] == "null" ? null : comments,
-      likes: map['likes'] == "null" ? null : likes,
+      interestsId: map['interestsId'] != null ? int.parse(map['interestsId']) : 0,
+      createPost: map['createPost'] != null ? DateTime.parse(map['createPost']) : DateTime.now(),
+      comments: map['comments'] == "null" || map['comments'] == null ? null : comments,
+      likes: map['likes'] == "null" || map['likes'] == null ? null : likes,
     );
   }
 }

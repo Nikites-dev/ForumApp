@@ -5,7 +5,7 @@ class User {
   String? email;
   String? password;
   String? image;
-  List<Interest>? interests;
+  List<int>? interests;
 
   User({
     this.username,
@@ -29,13 +29,21 @@ class User {
     if (value == null) {
       return null;
     }
+    List<int> interests = [];
+
+    if (value['interests'] != null)
+    {
+      (value['interests']).forEach((interest) {
+        interests.add(int.parse(interest.toString()));
+      });
+    }
 
     return User(
-      username: value['Username'],
-      email: value['Email'],
-      password: value['Password'],
-      image: value['Image'],
-      interests: value['Interests'],
+      username: value['username'],
+      email: value['email'],
+      password: value['password'],
+      image: value['image'],
+      interests: interests,
     );
   }
 

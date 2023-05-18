@@ -44,8 +44,7 @@ class _InterestsPageState extends State<InterestsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Column( 
           children: <Widget>[
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,
@@ -55,8 +54,17 @@ class _InterestsPageState extends State<InterestsPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.01,
             ),
-            Text(post == null ? "Выберите интересные для вас темы" : "Выберите тему поста",
-                style: const TextStyle(fontSize: 20, color: Colors.cyan)),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(post == null ? "Выберите интересные для вас темы" : "Выберите тему поста",
+                      style: const TextStyle(fontSize: 20, color: Colors.cyan,),
+                      textAlign: TextAlign.center,),
+                ),
+              ],
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
             ),

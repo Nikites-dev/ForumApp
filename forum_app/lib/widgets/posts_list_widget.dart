@@ -49,7 +49,10 @@ class _PostsListWidgetState extends State<PostsListWidget> {
     if (userInterests.isEmpty)
     {
       userInterests = await _authServices.getUserInterest(Provider.of<UserModel?>(context, listen: false)!.id);
-      setState(() {});
+      if (mounted)
+      {
+        setState(() {});
+      }
     }
   }
 
@@ -70,6 +73,7 @@ class _PostsListWidgetState extends State<PostsListWidget> {
           filterList();
 
           return ListView.builder(
+            shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
             itemCount: posts.length,
             itemBuilder: (context, index) {

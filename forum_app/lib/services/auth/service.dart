@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/comment.dart';
-import '../../models/interests.dart';
 import '../../models/user_info.dart' as models_user_info;
+import '../../models/user.dart' as models_user;
 import '../../responses/auth_responses.dart';
 import 'model.dart';
 
@@ -167,5 +167,13 @@ class AuthServices {
       var userInfo = await getUserInfo(userId);
       uniqueUsers[userId] = userInfo;
     }
+  }
+
+  Future<models_user.User?> getUser(String userId) async
+  {
+    var dbRef = FirebaseDatabase.instance.ref().child('user');
+    DataSnapshot snapshot = await dbRef.child(userId).get();
+
+    return models_user.User.fromMap(snapshot.value as Map<dynamic, dynamic>);
   }
 }
