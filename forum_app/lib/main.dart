@@ -30,7 +30,9 @@ class AppThemeMaterial extends StatelessWidget {
           '/reg': (context) => RegPage(),
           '/auth': (context) => const AuthPage(),
           '/home': (context) => const HomePage(),
-          '/interests': (context) => InterestsPage(post: null,),
+          '/interests': (context) => InterestsPage(
+                post: null,
+              ),
           '/create': (context) => CreatePage(),
         },
         theme: ThemeData(
