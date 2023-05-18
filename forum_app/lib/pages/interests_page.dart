@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:forum_app/models/interests.dart';
 import 'package:forum_app/services/auth/service.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../models/post.dart';
 import '../services/post_service.dart';
 
 class InterestsPage extends StatefulWidget {
+  File? postImgFile;
   Post? post;
   List<int>? currentInterests;
-  InterestsPage({super.key, required this.post, this.currentInterests});
+  InterestsPage({super.key, required this.post, this.currentInterests, this.postImgFile});
 
   @override
   State<InterestsPage> createState() => _InterestsPageState(post);
@@ -16,6 +20,7 @@ class InterestsPage extends StatefulWidget {
 class _InterestsPageState extends State<InterestsPage> {
   final AuthServices _authServices = AuthServices();
   final PostService _postService = PostService();
+  bool _loading = false;
   Post? post;
   bool isCreatePost = false;
   List<int> _selectedInterests = [];
@@ -43,7 +48,7 @@ class _InterestsPageState extends State<InterestsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: !_loading ?  Center(
         child: Column( 
           children: <Widget>[
             SizedBox(
@@ -75,7 +80,7 @@ class _InterestsPageState extends State<InterestsPage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_selectedInterests.isEmpty) {
                   final snackBar = SnackBar(
                     content: const Text('Выберите тему!'),
@@ -84,11 +89,23 @@ class _InterestsPageState extends State<InterestsPage> {
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 } else {
                   if (post == null) {
-                    _authServices.updateUserInterests(context, _selectedInterests);
+                    setState(() {
+                      _loading = true;
+                    });
+                    await _authServices.updateUserInterests(context, _selectedInterests);
+                    setState(() {
+                      _loading = false;
+                    });
                     Navigator.popAndPushNamed(context, "/");
                   } else {
-                    _postService.savePost(context, post!);
-                    Navigator.popAndPushNamed(context, "/home");
+                    setState(() {
+                      _loading = true;
+                    });
+                    await _postService.savePost(context, post!, widget.postImgFile);
+                    setState(() {
+                      _loading = false;
+                    });
+                    Navigator.pushNamedAndRemoveUntil(context, "/home", (Route<dynamic> route) => false);
                   }
                 }
               },
@@ -112,7 +129,7 @@ class _InterestsPageState extends State<InterestsPage> {
             ),
           ],
         ),
-      ),
+      ) : Center(child: LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 50)),
     );
   }
 

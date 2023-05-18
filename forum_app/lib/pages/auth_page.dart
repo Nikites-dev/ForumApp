@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forum_app/widgets/inputWidget.dart';
+import 'package:forum_app/widgets/input_widget.dart';
 import 'package:forum_app/services/auth/service.dart';
 
 class AuthPage extends StatefulWidget {

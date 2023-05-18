@@ -49,9 +49,9 @@ class Post {
       username: map['username'] ?? '',
       title: map['title'] ?? '',
       text: map['text'] ?? '',
-      imgUrl: map['imgUrl'] ?? '',
+      imgUrl: map['imgUrl'] ?? 'null',
       interestsId: map['interestsId'] != null ? int.parse(map['interestsId']) : 0,
-      createPost: map['createPost'] != null ? DateTime.parse(map['createPost']) : DateTime.now(),
+      createPost: map['createPost'] != null && map['createPost'] != 'null' ? DateTime.parse(map['createPost']) : DateTime.now(),
       comments: map['comments'] == "null" || map['comments'] == null ? null : comments,
       likes: map['likes'] == "null" || map['likes'] == null ? null : likes,
     );

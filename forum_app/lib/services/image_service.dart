@@ -9,14 +9,15 @@ import 'package:xid/xid.dart';
 class ImageService
 {
   final AuthServices _authService = AuthServices();
+  final _dbRef = FirebaseDatabase.instance.ref();
+  final _storageRef = FirebaseStorage.instance.ref();
 
   Future<String?> uploadPostImage(File file) async
   {
     var xid = Xid();
     
     try {
-      var imgfile = FirebaseStorage.instance
-        .ref()
+      var imgfile = _storageRef
         .child("PostImages")
         .child("/${xid.toString()}.jpg");
 
@@ -26,7 +27,6 @@ class ImageService
       var url = await snapshot.ref.getDownloadURL();
       return url;
     } catch (e) {
-      print(e);
       return 'null';
     }
   }
@@ -34,22 +34,20 @@ class ImageService
   Future<void> uploadUserImage(File file, String userId) async
   {
     try {
-      var dbRef = FirebaseDatabase.instance.ref().child('user');
+      var usersRef = _dbRef.child('user');
 
       var imgfile = FirebaseStorage.instance
         .ref()
         .child("UserImages")
         .child("/{userId}.jpg");
 
-      UploadTask task = imgfile.putFile(file!);
+      UploadTask task = imgfile.putFile(file);
       TaskSnapshot snapshot = await task;
 
       var url = await snapshot.ref.getDownloadURL();
 
-      await dbRef.child(userId).child("image").set(url);
+      await usersRef.child(userId).child("image").set(url);
       _authService.updateCacheInfo(userId);
-    } on Exception catch (e) {
-      print(e);
-    }
+    } on Exception catch (e) {}
   }
 }

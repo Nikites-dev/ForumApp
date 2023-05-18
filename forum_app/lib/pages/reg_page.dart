@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forum_app/services/auth/service.dart';
-import 'package:forum_app/widgets/inputWidget.dart';
+import 'package:forum_app/widgets/input_widget.dart';
 
 class RegPage extends StatefulWidget {
   RegPage({super.key});
@@ -42,7 +42,9 @@ class _RegPageState extends State<RegPage> {
   @override
   void dispose() {
     super.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
+    _passwordConfirmController.dispose();
     _passwordController.dispose();
   }
 

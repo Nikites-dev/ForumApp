@@ -1,4 +1,3 @@
-import 'package:forum_app/models/interest.dart';
 
 class User {
   String? username;

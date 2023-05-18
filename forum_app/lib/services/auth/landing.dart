@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:forum_app/pages/mainViewPager.dart';
+import 'package:forum_app/pages/home_view.dart';
 import '../../pages/auth_page.dart';
 import 'model.dart';
 

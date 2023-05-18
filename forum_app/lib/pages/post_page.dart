@@ -5,7 +5,7 @@ import 'package:forum_app/services/post_service.dart';
 import 'package:forum_app/widgets/post_info_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import '../widgets/inputWidget.dart';
+import '../widgets/input_widget.dart';
 import '../widgets/post_user_info_widget.dart';
 
 class PostPage extends StatefulWidget {
@@ -30,6 +30,12 @@ class _PostPageState extends State<PostPage> {
   {
     await _authServices.cacheUserInfo(widget.post.comments!, isFirstBuild);
     isFirstBuild = false;
+  }
+
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+    _commentController.dispose();
   }
 
   @override

@@ -13,7 +13,8 @@ import '../services/auth/model.dart';
 import '../widgets/posts_list_widget.dart';
 
 class ProfileView extends StatefulWidget {
-  ProfileView({super.key,});
+  final String searchText;
+  ProfileView(this.searchText, {super.key,});
 
   @override
   State<ProfileView> createState() => Profile();
@@ -24,6 +25,7 @@ class Profile extends State<ProfileView> {
   final ImageService _imageService = ImageService();
   late List<Widget> tabBarViews;
   late List<Widget> tabs;
+  bool _loading = false;
   User? user;
   bool isSelectUserImage = false;
 
@@ -49,15 +51,19 @@ class Profile extends State<ProfileView> {
   uploadFile() async {
     if (file != null)
     {
+      setState(() {
+        _loading = true;
+      });
       await _imageService.uploadUserImage(file!, Provider.of<UserModel?>(context, listen: false)!.id);
       setState(() {
         isSelectUserImage = false;
+        _loading = false;
       });
       file = null;
       setUserInfo();
     }
   }
-
+  
   @override
   void initState() {
     super.initState();
@@ -74,9 +80,9 @@ class Profile extends State<ProfileView> {
       ),
     ];
 
-    tabBarViews = const [
-      PostsListWidget(false, false, true, ''),
-      PostsListWidget(false, true, false, ''),];
+    tabBarViews = [
+      PostsListWidget(false, false, true, widget.searchText),
+      PostsListWidget(false, true, false, widget.searchText),];
       
   }
 
@@ -94,7 +100,8 @@ class Profile extends State<ProfileView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Center(
-                      child: SizedBox(
+                      child:
+                      !_loading ? SizedBox(
                         height: 160,
                         width: 160,
                         child: Stack(children: [
@@ -157,7 +164,7 @@ class Profile extends State<ProfileView> {
                             ),
                           ),
                         ]),
-                      ),
+                      ) : LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 120)
                     ),  
               
                     user != null && user!.username != null

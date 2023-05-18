@@ -11,6 +11,7 @@ import 'model.dart';
 
 class AuthServices {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final _dbRef = FirebaseDatabase.instance.ref();
   static Map<String, models_user_info.UserInfo> uniqueUsers = <String, models_user_info.UserInfo>{};
 
   Stream<UserModel?> get currentUser {
@@ -84,33 +85,35 @@ class AuthServices {
 
   Future saveUserToDb(BuildContext context, String username, String email, String password) async
   {
-    var userId = Provider.of<UserModel?>(context, listen: false)!.id;
-    var dbRef = FirebaseDatabase.instance.ref().child('user');
+    try{
+      var userId = Provider.of<UserModel?>(context, listen: false)!.id;
+      var usersRef = _dbRef.child('user');
 
-    await dbRef
-        .child(userId)
-        .child("username")
-        .set(username);
-    await dbRef
-        .child(userId)
-        .child("email")
-        .set(email);
-    await dbRef
-        .child(userId)
-        .child("password")
-        .set(password);
+      var user = usersRef.child(userId);
+
+      await user
+          .child("username")
+          .set(username);
+      await user
+          .child("email")
+          .set(email);
+      await user
+          .child("password")
+          .set(password);
+    } catch (e) {return;}
   }
 
   Future updateUserInterests(BuildContext context, List<int> selectedInterests) async
   {
-    var userId = Provider.of<UserModel?>(context, listen: false)!.id;
-    var dbRef = FirebaseDatabase.instance.ref();
+    try{
+      var userId = Provider.of<UserModel?>(context, listen: false)!.id;
 
-    await dbRef
+    await _dbRef
         .child('user')
         .child(userId.toString())
         .child("interests")
         .set(selectedInterests);
+    } catch (e) {return;}
   }
  
   Future<void> cacheUserInfo(List<Comment> comments, bool isFirstBuild) async
@@ -140,23 +143,29 @@ class AuthServices {
 
   Future<models_user_info.UserInfo> getUserInfo(String userId) async
   {
-    var dbRef = FirebaseDatabase.instance.ref().child('user');
-    DataSnapshot snapshot = await dbRef.child(userId).get();
-    var userImg = snapshot.child('image').value.toString();
-    var userName = snapshot.child('username').value.toString();
-    return models_user_info.UserInfo(userName, userImg);
+    try{
+      var usersRef = _dbRef.child('user');
+      DataSnapshot snapshot = await usersRef.child(userId).get();
+
+      var userImg = snapshot.child('image').value.toString();
+      var userName = snapshot.child('username').value.toString();
+      return models_user_info.UserInfo(userName, userImg);
+    } catch (e) {return models_user_info.UserInfo('null', 'null');}
   }
 
   Future<List<int>> getUserInterest(String userId) async
   {
-    var dbRef = FirebaseDatabase.instance.ref().child('user');
-    DataSnapshot snapshot = await dbRef.child(userId).child('interests').get();
-    List<int> interests = [];
-    snapshot.children.forEach((element) {
-      interests.add(int.parse(element.value.toString()));
-    });
+    try{
+      var usersRef = _dbRef.child('user');
+      DataSnapshot snapshot = await usersRef.child(userId).child('interests').get();
 
-    return interests;
+      List<int> interests = [];
+      snapshot.children.forEach((element) {
+        interests.add(int.parse(element.value.toString()));
+      });
+
+      return interests;
+    } catch (e) {return [];}    
   }
 
   Future<void> updateCacheInfo(String userId) async
@@ -171,9 +180,11 @@ class AuthServices {
 
   Future<models_user.User?> getUser(String userId) async
   {
-    var dbRef = FirebaseDatabase.instance.ref().child('user');
-    DataSnapshot snapshot = await dbRef.child(userId).get();
+    try{
+      var usersRef = _dbRef.child('user');
+      DataSnapshot snapshot = await usersRef.child(userId).get();
 
-    return models_user.User.fromMap(snapshot.value as Map<dynamic, dynamic>);
+      return models_user.User.fromMap(snapshot.value as Map<dynamic, dynamic>);
+    } catch (e) {return null;}
   }
 }

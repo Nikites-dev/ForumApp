@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:forum_app/services/post_service.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../models/post.dart';
 import 'interests_page.dart';
 
@@ -15,6 +15,7 @@ class Create extends State<CreatePage> {
   final PostService _postService = PostService();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _textController = TextEditingController();
+  final bool _loading = false;
   Post? newPost = Post();
   File? file;
   ImagePicker imagePicker = ImagePicker();
@@ -36,9 +37,15 @@ class Create extends State<CreatePage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _titleController.dispose();
+    _textController.dispose();
+  }
+  
+  @override
   Widget build(BuildContext context) {
-    SharedPreferences prefs;
-    return Scaffold(
+    return !_loading ?  Scaffold(
       appBar: AppBar(actions: [
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
@@ -51,16 +58,17 @@ class Create extends State<CreatePage> {
                 Icon(Icons.keyboard_arrow_right_rounded),
               ],
             ),
-            onTap: () async => {
+            onTap: () async {
               if(_textController.text.trim() != "" && _titleController.text.trim() != "")
               {
-                newPost = await _postService.createPost(context, _titleController.text.toString(), _textController.text.toString(), file),
+                newPost = await _postService.createPost(context, _titleController.text.toString(), _textController.text.toString());
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => InterestsPage(
-                      post: newPost)))  
+                      post: newPost,
+                      postImgFile: file,)));
               } else {
-                showSnackBar('Заполните заголовок и текст!'),
+                showSnackBar('Заполните заголовок и текст!');
               }
             },
           ),
@@ -81,6 +89,7 @@ class Create extends State<CreatePage> {
                     file!,
                     fit: BoxFit.fill),
                   onPressed: () {
+                    FocusManager.instance.primaryFocus?.unfocus();
                     selectImage();
                   },),
                 )
@@ -134,7 +143,7 @@ class Create extends State<CreatePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               InkWell(
-                onTap: () => {selectImage(),},
+                onTap: () => {FocusManager.instance.primaryFocus?.unfocus(), selectImage(),},
                 child: const Icon(Icons.image_outlined)),
               InkWell(
                 onTap: () => {FocusManager.instance.primaryFocus?.unfocus()},
@@ -143,7 +152,7 @@ class Create extends State<CreatePage> {
             ],
           ),
         )),
-      ),
-    );
+      )
+    ) : Scaffold(body: Center(child: LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 60),));
   }
 }

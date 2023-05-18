@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forum_app/pages/main_view.dart';
 import 'package:forum_app/pages/profile_view.dart';
 import 'package:forum_app/services/auth/service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../widgets/inputWidget.dart';
-import 'create_page.dart';
+import '../widgets/input_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -17,17 +14,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // List<User> users = List.from(DBConnection().listUserMap());
-  // Future users = DBConnection().list();
-
   final TextEditingController _searchController = TextEditingController();
   int index = 0;
   List<Widget> listPages = [];
-
-  RemoveLocalData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('userId');
-  }
 
   @override
   void initState() {
@@ -42,8 +31,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     listPages = [
       MainView(_searchController.text),
-      ProfileView(),
+      ProfileView(_searchController.text),
     ];
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -64,9 +54,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               await AuthServices().logOut();
-              await RemoveLocalData();
-              Navigator.popAndPushNamed(context, '/');
-              // Navigator.pop(context);
+              setState(() {});
             },
             icon: const Icon(Icons.exit_to_app),
           ),

@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:forum_app/widgets/post_info_widget.dart';
 import 'package:forum_app/widgets/post_user_info_widget.dart';
@@ -65,7 +64,7 @@ class _PostsListWidgetState extends State<PostsListWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseDatabase.instance.ref('post').onValue,
+      stream: _postService.allPostsStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active && snapshot.data != null)
         {

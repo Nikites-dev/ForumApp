@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:provider/provider.dart';
 
 import '../models/post.dart';
-import '../services/auth/model.dart';
 import '../services/auth/service.dart';
 import 'interest_chip_widget.dart';
 
@@ -64,7 +62,7 @@ class _PostUserInfoWidgetState extends State<PostUserInfoWidget> {
                       padding: const EdgeInsets.all(1.0),
                       child: widget.post.createPost == null 
                       ? const Text("не указано") 
-                      : Text(_dateFormatter.format(widget.post.createPost!), style: TextStyle(fontSize: 12),),
+                      : Text(_dateFormatter.format(widget.post.createPost!), style: const TextStyle(fontSize: 12),),
                     ),
                   ] 
                   : [LoadingAnimationWidget.waveDots(color: Colors.cyan, size: 10),]
