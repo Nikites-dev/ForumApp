@@ -98,7 +98,7 @@ class Create extends State<CreatePage> {
                     selectImage();
                   },),
                 )
-                : const Text('Изображение не выбрано'),
+                : const Padding(padding: EdgeInsets.all(8.0), child: Text('Изображение не выбрано'),),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
@@ -110,7 +110,7 @@ class Create extends State<CreatePage> {
                     textInputAction: TextInputAction.next,
                     style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
                     decoration: InputDecoration.collapsed(
-                      hintText: 'Title',
+                      hintText: 'Заголовок',
                       hintStyle: TextStyle(
                           color: Colors.grey.shade400,
                           fontSize: 32,
@@ -125,10 +125,10 @@ class Create extends State<CreatePage> {
                     controller: _textController,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    maxLength: 350,
+                    maxLength: 600,
                     style: const TextStyle(fontSize: 18),
                     decoration: InputDecoration.collapsed(
-                      hintText: 'body text (optional)',
+                      hintText: 'текст поста',
                       hintStyle: TextStyle(
                           color: Colors.grey.shade400,
                           fontSize: 18,

@@ -49,7 +49,11 @@ class _PostUserInfoWidgetState extends State<PostUserInfoWidget> {
                     backgroundImage: NetworkImage(
                         AuthServices.uniqueUsers[widget.post.username]!.userImg,),
                   )
-                  : LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 30)
+                  : CircleAvatar(
+                    child: Text(AuthServices.uniqueUsers[widget.post.username]!.username[0], 
+                      style: const TextStyle(fontSize: 18,color: Colors.white),
+                    ),
+                  ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

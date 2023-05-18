@@ -64,9 +64,16 @@ class _PostPageState extends State<PostPage> {
               child: ListTile(
                 leading: AuthServices.uniqueUsers[comment.username] == null
                   ? LoadingAnimationWidget.fallingDot(color: primaryColor, size: 30)
-                  : CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            AuthServices.uniqueUsers[comment.username]!.userImg),),
+                  : (AuthServices.uniqueUsers[comment.username]!.userImg == 'null' ? 
+                    CircleAvatar(
+                      child: Text(AuthServices.uniqueUsers[comment.username]!.username[0], 
+                        style: const TextStyle(fontSize: 18,color: Colors.white),
+                      ),
+                    ) : CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              AuthServices.uniqueUsers[comment.username]!.userImg),
+                    )
+                  ),
                 title: AuthServices.uniqueUsers[comment.username] == null || AuthServices.uniqueUsers[comment.username]!.username == 'null'
                   ? Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

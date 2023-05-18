@@ -102,6 +102,7 @@ class _AuthPageState extends State<AuthPage> {
                       showSnackBar('Заполните все поля!');
                     } else {
                       signIn();
+                      Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
                     }
                   },
                   style: ButtonStyle(

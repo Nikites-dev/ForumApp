@@ -36,10 +36,9 @@ class ImageService
     try {
       var usersRef = _dbRef.child('user');
 
-      var imgfile = FirebaseStorage.instance
-        .ref()
+      var imgfile = _storageRef
         .child("UserImages")
-        .child("/{userId}.jpg");
+        .child("/{$userId}.jpg");
 
       UploadTask task = imgfile.putFile(file);
       TaskSnapshot snapshot = await task;

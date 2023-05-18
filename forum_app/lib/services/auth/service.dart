@@ -63,7 +63,7 @@ class AuthServices {
 
       return null;
     } on FirebaseAuthException catch (authException) {
-      if (authException.code == 'email-already-exists')
+      if (authException.code == 'email-already-exists' || authException.code == 'email-already-in-use')
       {
         return AuthResponses.userExist;
       }

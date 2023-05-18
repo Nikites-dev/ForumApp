@@ -32,7 +32,8 @@ class Post {
       ((map['comments'] ?? [] as Map<dynamic, dynamic>)).forEach((key, value) {
         var commentValue = value as Map<dynamic, dynamic>;
         final comment = Comment((commentValue)['username'],
-          (commentValue)['text'], DateTime.parse((commentValue)['createdDate'] ?? ''));
+          (commentValue)['text'] ?? '', 
+          DateTime.parse((commentValue)['createdDate'] ?? DateTime.now().toString()));
         comments.add(comment); 
       });
     }
