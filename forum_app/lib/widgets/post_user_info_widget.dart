@@ -20,13 +20,17 @@ class PostUserInfoWidget extends StatefulWidget {
 class _PostUserInfoWidgetState extends State<PostUserInfoWidget> {
   final AuthServices _authServices = AuthServices();
   final DateFormat _dateFormatter = DateFormat('dd.MM.y HH:mm');
+  bool _isUserInfoLoaded = false;
   
   loadUserInfo() async
   {
+    _isUserInfoLoaded = false;
     await cacheUserInfo();
     if (mounted)
     {
-      setState(() {});
+      setState(() {
+        _isUserInfoLoaded = true;
+      });
     }
   }
 
@@ -50,21 +54,25 @@ class _PostUserInfoWidgetState extends State<PostUserInfoWidget> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: AuthServices.uniqueUsers[widget.post.username]!.userImg != 'null' ? CircleAvatar(
-                backgroundImage: NetworkImage(
-                    AuthServices.uniqueUsers[widget.post.username]!.userImg,),
+              child: _isUserInfoLoaded && AuthServices.uniqueUsers[widget.post.username] != null 
+                && AuthServices.uniqueUsers[widget.post.username]!.userImg != 'null' 
+                ? CircleAvatar(
+                    backgroundImage: NetworkImage(
+                      AuthServices.uniqueUsers[widget.post.username]!.userImg,),
               )
               : CircleAvatar(
-                child: Text(AuthServices.uniqueUsers[widget.post.username]!.username != 'null' 
-                  ? AuthServices.uniqueUsers[widget.post.username]!.username[0]
-                  : '',
-                  style: const TextStyle(fontSize: 18,color: Colors.white),
-                ),
+                  child: Text(AuthServices.uniqueUsers[widget.post.username] != null 
+                    && AuthServices.uniqueUsers[widget.post.username]!.username != 'null' 
+                    ? AuthServices.uniqueUsers[widget.post.username]!.username[0]
+                    : '',
+                    style: const TextStyle(fontSize: 18,color: Colors.white),
+                  ),
               ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: AuthServices.uniqueUsers[widget.post.username]!.username != 'null' ? [
+              children: _isUserInfoLoaded && AuthServices.uniqueUsers[widget.post.username] != null 
+                && AuthServices.uniqueUsers[widget.post.username]!.username != 'null' ? [
                 Padding(
                       padding: const EdgeInsets.all(1.0),
                       child: Text(AuthServices.uniqueUsers[widget.post.username]!.username),
