@@ -133,8 +133,10 @@ class PostService
 
   List<Post> getPostByInterests(List<int> interests, List<Post> posts, String searchText)
   {
+    var searchStr = searchText.toLowerCase();
     List<Post> filteredList = posts
-        .where((Post post) => post.title!.toLowerCase().contains(searchText.toLowerCase()) && interests.contains(post.interestsId))
+        .where((Post post) => (post.title!.toLowerCase().contains(searchStr)
+        || post.text!.toLowerCase().contains(searchText))  && interests.contains(post.interestsId))
         .toList();
 
     filteredList.sort(((a, b) => b.createPost!.compareTo(a.createPost!)));
@@ -143,8 +145,11 @@ class PostService
 
   List<Post> getLikedPosts(List<Post> posts, String searchText, String userId)
   {
-    List<Post> filteredList = posts
-        .where((Post post) => (post.likes != null ? post.likes!.contains(userId) : false) && post.title!.toLowerCase().contains(searchText.toLowerCase()))
+    var searchStr = searchText.toLowerCase();
+    List<Post> filteredList = posts.where((Post post) => 
+        (post.likes != null ? post.likes!.contains(userId) : false) 
+        && (post.title!.toLowerCase().contains(searchStr)
+        || post.text!.toLowerCase().contains(searchText)))
         .toList();
 
     filteredList.sort(((a, b) => b.createPost!.compareTo(a.createPost!)));
@@ -153,8 +158,10 @@ class PostService
 
   List<Post> getUserPosts(List<Post> posts, String searchText, String userId)
   {
+    var searchStr = searchText.toLowerCase();
     List<Post> filteredList = posts
-        .where((Post post) => post.title!.toLowerCase().contains(searchText.toLowerCase()) && post.username == userId)
+        .where((Post post) => (post.title!.toLowerCase().contains(searchStr)
+        || post.text!.toLowerCase().contains(searchText)) && post.username == userId)
         .toList();
 
     filteredList.sort(((a, b) => b.createPost!.compareTo(a.createPost!)));
