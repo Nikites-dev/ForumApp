@@ -68,7 +68,10 @@ class Profile extends State<ProfileView> {
   void initState() {
     super.initState();
     setUserInfo();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     tabs = [
       const Tab(
         icon: Icon(Icons.person),
@@ -82,12 +85,9 @@ class Profile extends State<ProfileView> {
 
     tabBarViews = [
       PostsListWidget(false, false, true, widget.searchText),
-      PostsListWidget(false, true, false, widget.searchText),];
-      
-  }
+      PostsListWidget(false, true, false, widget.searchText),
+    ];
 
-  @override
-  Widget build(BuildContext context) {
     return DefaultTabController(
       length: tabs.length, 
       child: Scaffold(

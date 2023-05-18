@@ -51,6 +51,8 @@ class _PostPageState extends State<PostPage> {
 
   Widget commentsListView()
   { 
+    var primaryColor = Theme.of(context).primaryColor;
+
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: ListView(
@@ -61,7 +63,7 @@ class _PostPageState extends State<PostPage> {
             return Card(    
               child: ListTile(
                 leading: AuthServices.uniqueUsers[comment.username] == null
-                  ? LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 30)
+                  ? LoadingAnimationWidget.fallingDot(color: primaryColor, size: 30)
                   : CircleAvatar(
                         backgroundImage: NetworkImage(
                             AuthServices.uniqueUsers[comment.username]!.userImg),),
@@ -69,7 +71,7 @@ class _PostPageState extends State<PostPage> {
                   ? Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      LoadingAnimationWidget.waveDots(color: Colors.cyan, size: 10),
+                      LoadingAnimationWidget.waveDots(color: primaryColor, size: 10),
                     ],
                   )
                   : Column(
@@ -89,9 +91,11 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.cyan,
+        backgroundColor: primaryColor,
       ),
       body: Card(
           shape: RoundedRectangleBorder(

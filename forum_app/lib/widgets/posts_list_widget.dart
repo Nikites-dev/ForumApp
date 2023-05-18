@@ -66,36 +66,42 @@ class _PostsListWidgetState extends State<PostsListWidget> {
     return StreamBuilder(
       stream: _postService.allPostsStream,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active && snapshot.data != null)
+        if ((snapshot.connectionState == ConnectionState.active
+         || snapshot.connectionState == ConnectionState.done)
+         && snapshot.data != null)
         {
           posts = _postService.convertPosts(snapshot.data!.snapshot.value as Map<dynamic, dynamic>);
           filterList();
 
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const BouncingScrollPhysics(),
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            PostPage(post: posts[index])));
-                  },
-                  child: Column(
-                    children: [
-                      PostUserInfoWidget(post: posts[index]),
-                      PostInfoWidget(post: posts[index], isForList: true)
-                  ]),
-                ),
-              );
-            },
-          );
+          if (posts.isNotEmpty)
+          {
+            return ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              PostPage(post: posts[index])));
+                    },
+                    child: Column(
+                      children: [
+                        PostUserInfoWidget(post: posts[index]),
+                        PostInfoWidget(post: posts[index], isForList: true)
+                    ]),
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Center(child: Text('Нет постов'));
+          }
         }
         return LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 40);
       },

@@ -47,6 +47,8 @@ class _InterestsPageState extends State<InterestsPage> {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
       body: !_loading ?  Center(
         child: Column( 
@@ -129,7 +131,7 @@ class _InterestsPageState extends State<InterestsPage> {
             ),
           ],
         ),
-      ) : Center(child: LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 50)),
+      ) : Center(child: LoadingAnimationWidget.fallingDot(color: primaryColor, size: 50)),
     );
   }
 
@@ -145,7 +147,7 @@ class _InterestsPageState extends State<InterestsPage> {
             label: Text(Interests.list[i].name.toString(),
                 style: const TextStyle(fontSize: 20, color: Colors.black54)),
             backgroundColor: _selectedInterests.contains(i)
-                ? const Color.fromARGB(255, 189, 243, 192)
+                ? const Color.fromARGB(255, 195, 255, 198)
                 : Colors.white,
             onPressed: () {
               setState(() {

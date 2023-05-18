@@ -34,10 +34,12 @@ class _HomePageState extends State<HomePage> {
       ProfileView(_searchController.text),
     ];
 
+    var primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.cyan,
+        backgroundColor: primaryColor,
         actions: [
           Padding(
             padding: const EdgeInsets.fromLTRB(8.0, 8.0, 28.0, 8.0),
@@ -45,8 +47,8 @@ class _HomePageState extends State<HomePage> {
               width: 250,
               child: InputWidget(
                 _searchController,
-                color: Colors.black,
-                icon: const Icon(Icons.search, color: Colors.black),
+                color: Colors.black54,
+                icon: const Icon(Icons.search, color: Colors.black54),
                 labelText: 'Search',
               ),
             ),
@@ -54,9 +56,9 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               await AuthServices().logOut();
-              setState(() {});
+              Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
             },
-            icon: const Icon(Icons.exit_to_app),
+            icon: const Icon(Icons.exit_to_app, color: Colors.black54,),
           ),
         ],
       ),
@@ -66,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           FocusManager.instance.primaryFocus?.unfocus();
           Navigator.pushNamed(context, '/create');
         },
-        backgroundColor: Colors.cyan.shade700,
+        backgroundColor: Colors.cyan.shade500,
         child: const Icon(
           Icons.add,
         ),
@@ -74,7 +76,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
-        backgroundColor: Colors.cyan,
+        backgroundColor: primaryColor,
         selectedItemColor: Colors.white,
         items: const [
           BottomNavigationBarItem(

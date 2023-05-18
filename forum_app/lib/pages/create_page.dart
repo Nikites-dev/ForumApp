@@ -45,35 +45,40 @@ class Create extends State<CreatePage> {
   
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+
     return !_loading ?  Scaffold(
-      appBar: AppBar(actions: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-          child: InkWell(
-            child: Row(
-              children: const [
-                  Text(
-                  'Далее',
-                ),
-                Icon(Icons.keyboard_arrow_right_rounded),
-              ],
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+            child: InkWell(
+              child: Row(
+                children: const [
+                    Text(
+                    'Далее',
+                  ),
+                  Icon(Icons.keyboard_arrow_right_rounded),
+                ],
+              ),
+              onTap: () async {
+                if(_textController.text.trim() != "" && _titleController.text.trim() != "")
+                {
+                  newPost = await _postService.createPost(context, _titleController.text.toString(), _textController.text.toString());
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => InterestsPage(
+                        post: newPost,
+                        postImgFile: file,)));
+                } else {
+                  showSnackBar('Заполните заголовок и текст!');
+                }
+              },
             ),
-            onTap: () async {
-              if(_textController.text.trim() != "" && _titleController.text.trim() != "")
-              {
-                newPost = await _postService.createPost(context, _titleController.text.toString(), _textController.text.toString());
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => InterestsPage(
-                      post: newPost,
-                      postImgFile: file,)));
-              } else {
-                showSnackBar('Заполните заголовок и текст!');
-              }
-            },
-          ),
-        )
-      ]),
+          )
+        ]
+      ),
       body: Scaffold(
         body: SingleChildScrollView(
           child: Stack(children: <Widget>[
@@ -153,6 +158,6 @@ class Create extends State<CreatePage> {
           ),
         )),
       )
-    ) : Scaffold(body: Center(child: LoadingAnimationWidget.fallingDot(color: Colors.cyan, size: 60),));
+    ) : Scaffold(body: Center(child: LoadingAnimationWidget.fallingDot(color: primaryColor, size: 60),));
   }
 }
