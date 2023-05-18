@@ -13,6 +13,7 @@ class _AuthPageState extends State<AuthPage> {
   final AuthServices _service = AuthServices();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isResultSuccess = false;
 
   void showSnackBar(String value) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -26,6 +27,11 @@ class _AuthPageState extends State<AuthPage> {
     
     if(authRes != null) {
       showSnackBar(authRes);
+      _isResultSuccess = false;
+    }
+    else
+    {
+      _isResultSuccess = true;
     }
   }
 
@@ -87,6 +93,7 @@ class _AuthPageState extends State<AuthPage> {
                   color: Colors.cyan,
                   icon: const Icon(Icons.lock, color: Colors.cyan),
                   labelText: 'Пароль',
+                  isPassword: true,
                 ),
               ),
               const SizedBox(
@@ -102,7 +109,10 @@ class _AuthPageState extends State<AuthPage> {
                       showSnackBar('Заполните все поля!');
                     } else {
                       signIn();
-                      Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
+                      if (_isResultSuccess)
+                      {
+                        Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
+                      }
                     }
                   },
                   style: ButtonStyle(

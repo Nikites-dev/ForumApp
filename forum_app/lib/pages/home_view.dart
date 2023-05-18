@@ -50,6 +50,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.black54,
                 icon: const Icon(Icons.search, color: Colors.black54),
                 labelText: 'Search',
+                cursorColor: Colors.black54,
               ),
             ),
           ),

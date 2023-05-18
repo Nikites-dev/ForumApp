@@ -112,6 +112,7 @@ class _RegPageState extends State<RegPage> {
                 color: Colors.cyan,
                 icon: const Icon(Icons.lock, color: Colors.cyan),
                 labelText: 'Пароль',
+                isPassword: true,
               ),
             ),
             const SizedBox(
@@ -125,6 +126,7 @@ class _RegPageState extends State<RegPage> {
                 color: Colors.cyan,
                 icon: const Icon(Icons.lock, color: Colors.cyan),
                 labelText: 'Повтор пароля',
+                isPassword: true,
               ),
             ),
             const SizedBox(
